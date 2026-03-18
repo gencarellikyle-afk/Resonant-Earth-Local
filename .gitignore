@@ -4,3 +4,6 @@ node_modules
 *.mjs
 fix*.mjs
 check*.mjs
+
+.env.local
+part_*.txt
