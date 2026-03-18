@@ -49,7 +49,7 @@ useEffect(()=>{setTimeout(()=>setLoaded(true),300);},[]);
 useEffect(()=>{if(isMobile.current)return;function m(e){mouseRef.current={x:(e.clientX/window.innerWidth-0.5)*2,y:(e.clientY/window.innerHeight-0.5)*2};}window.addEventListener("mousemove",m);return()=>window.removeEventListener("mousemove",m);},[]);
 useEffect(()=>{if(isMobile.current)return;let f;let hx=0,hy=0;function tick(){f=requestAnimationFrame(tick);const{x,y}=mouseRef.current;hx+=(-x*14-hx)*0.045;hy+=(-y*10-hy)*0.045;setHeartOffset({x:hx,y:hy});}tick();return()=>cancelAnimationFrame(f);},[]);
 useEffect(()=>{const id=setInterval(()=>{setTxVisible(false);setTimeout(()=>{const n=(txIndex+1)%TRANSMISSIONS.length;setTxIndex(n);setTxText(TRANSMISSIONS[n]);setTxVisible(true);},1200);},13000);return()=>clearInterval(id);},[txIndex]);
-return(<div style={{backgroundColor:"#080604",minHeight:"100vh",width:"100%",position:"relative",overflowX:"hidden"}}>
+return(<div style={{backgroundColor:"#080605",minHeight:"100vh",width:"100%",position:"relative",overflowX:"hidden"}}>
 <div aria-hidden="true" style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0,background:"radial-gradient(ellipse 120% 120% at 50% 46%,rgba(140,50,8,0.26) 0%,rgba(80,25,5,0.12) 40%,rgba(20,10,4,0.85) 70%,rgba(8,6,4,1) 100%)"}}/>
 <InteractiveGlobe coherence={coherence}/>
 <div style={{position:"fixed",inset:0,zIndex:2,pointerEvents:"none",background:"none"}}/>
