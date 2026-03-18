@@ -1,1 +1,7 @@
 html,body{margin:0;padding:0;width:100%;min-height:100vh;background-color:#110E0A;}*,*::before,*::after{box-sizing:border-box;}::selection{background:#C1440E;color:#E8DDD0;}
+@media (max-width: 767px) and (orientation: portrait) {
+  canvas.globe-canvas {
+    width: 120vh !important;
+    height: 120vh !important;
+  }
+}
