@@ -62,7 +62,7 @@ return(<div style={{backgroundColor:"#120802",backgroundImage:"radial-gradient(e
 <span style={{display:"block",fontSize:"clamp(3.5rem,11vw,9rem)",color:"rgba(222,188,75,"+(0.8+coherence*0.18)+")",letterSpacing:"-0.01em",transition:"color 2s ease"}}>Resonant</span>
 <span style={{display:"block",fontSize:"clamp(3.5rem,11vw,9rem)",fontStyle:"italic",color:"rgba(193,68,14,"+(0.85+coherence*0.15)+")",marginTop:"-0.1em",letterSpacing:"-0.01em",transition:"color 2s ease"}}>Earth</span>
 </h1></div></header>
-<div style={{position:"relative",width:"min(280px,72vw)",height:"min(280px,72vw)",flexShrink:0,marginTop:"clamp(-3rem,-6vw,-1rem)",opacity:loaded?1:0,transition:"opacity 3s ease 0.8s"}} onMouseEnter={()=>setHovered(true)} onMouseLeave={()=>setHovered(false)} onTouchStart={()=>setHovered(true)} onTouchEnd={()=>setHovered(false)}>
+<div style={{position:"relative",width:"min(320px,80vw)",height:"min(320px,80vw)",flexShrink:0,marginTop:"clamp(-6rem,-10vw,-3rem)",opacity:loaded?1:0,transition:"opacity 3s ease 0.8s"}} onMouseEnter={()=>setHovered(true)} onMouseLeave={()=>setHovered(false)} onTouchStart={()=>setHovered(true)} onTouchEnd={()=>setHovered(false)}>
 <Ripples triggered={hovered}/>
 <Particles coherence={coherence}/>
 {[1.75,1.4,1.15].map((s,i)=>(<div key={i} aria-hidden="true" style={{position:"absolute",inset:0,borderRadius:"9999px",background:"radial-gradient(ellipse 65% 65% at 50% 50%,rgba(255,"+(90+i*25)+",30,"+(0.05+coherence*0.1)/(i+1)+") 0%,transparent 68%)",transform:"scale("+(s+coherence*0.2+(hovered?0.15:0))+")",transition:"transform 2.5s ease",pointerEvents:"none"}}/>))}
