@@ -50,7 +50,7 @@ useEffect(()=>{if(isMobile.current)return;function m(e){mouseRef.current={x:(e.c
 useEffect(()=>{if(isMobile.current)return;let f;let hx=0,hy=0;function tick(){f=requestAnimationFrame(tick);const{x,y}=mouseRef.current;hx+=(-x*14-hx)*0.045;hy+=(-y*10-hy)*0.045;setHeartOffset({x:hx,y:hy});}tick();return()=>cancelAnimationFrame(f);},[]);
 useEffect(()=>{const id=setInterval(()=>{setTxVisible(false);setTimeout(()=>{const n=(txIndex+1)%TRANSMISSIONS.length;setTxIndex(n);setTxText(TRANSMISSIONS[n]);setTxVisible(true);},1200);},13000);return()=>clearInterval(id);},[txIndex]);
 return(<div style={{backgroundColor:"#080604",minHeight:"100vh",width:"100%",position:"relative",overflowX:"hidden"}}>
-<div aria-hidden="true" style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0,background:"radial-gradient(ellipse 85% 85% at 50% 46%,rgba(140,50,8,0.26) 0%,rgba(80,25,5,0.12) 40%,rgba(8,6,4,0) 70%)"}}/>
+<div aria-hidden="true" style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0,background:"radial-gradient(ellipse 120% 120% at 50% 46%,rgba(140,50,8,0.26) 0%,rgba(80,25,5,0.12) 40%,rgba(20,10,4,0.85) 70%,rgba(8,6,4,1) 100%)"}}/>
 <InteractiveGlobe coherence={coherence}/>
 <div style={{position:"fixed",inset:0,zIndex:2,pointerEvents:"none",background:"none"}}/>
 <div style={{position:"relative",zIndex:10,width:"100%",minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"0.5rem 1rem 0"}}>
@@ -62,7 +62,7 @@ return(<div style={{backgroundColor:"#080604",minHeight:"100vh",width:"100%",pos
 <span style={{display:"block",fontSize:"clamp(3.5rem,11vw,9rem)",color:"rgba(222,188,75,"+(0.8+coherence*0.18)+")",letterSpacing:"-0.01em",transition:"color 2s ease"}}>Resonant</span>
 <span style={{display:"block",fontSize:"clamp(3.5rem,11vw,9rem)",fontStyle:"italic",color:"rgba(193,68,14,"+(0.85+coherence*0.15)+")",marginTop:"-0.1em",letterSpacing:"-0.01em",transition:"color 2s ease"}}>Earth</span>
 </h1></div></header>
-<div style={{position:"relative",width:"min(280px,72vw)",height:"min(280px,72vw)",flexShrink:0,opacity:loaded?1:0,transition:"opacity 3s ease 0.8s"}} onMouseEnter={()=>setHovered(true)} onMouseLeave={()=>setHovered(false)} onTouchStart={()=>setHovered(true)} onTouchEnd={()=>setHovered(false)}>
+<div style={{position:"relative",width:"min(280px,72vw)",height:"min(280px,72vw)",flexShrink:0,marginTop:"clamp(-3rem,-6vw,-1rem)",opacity:loaded?1:0,transition:"opacity 3s ease 0.8s"}} onMouseEnter={()=>setHovered(true)} onMouseLeave={()=>setHovered(false)} onTouchStart={()=>setHovered(true)} onTouchEnd={()=>setHovered(false)}>
 <Ripples triggered={hovered}/>
 <Particles coherence={coherence}/>
 {[1.75,1.4,1.15].map((s,i)=>(<div key={i} aria-hidden="true" style={{position:"absolute",inset:0,borderRadius:"9999px",background:"radial-gradient(ellipse 65% 65% at 50% 50%,rgba(255,"+(90+i*25)+",30,"+(0.05+coherence*0.1)/(i+1)+") 0%,transparent 68%)",transform:"scale("+(s+coherence*0.2+(hovered?0.15:0))+")",transition:"transform 2.5s ease",pointerEvents:"none"}}/>))}
