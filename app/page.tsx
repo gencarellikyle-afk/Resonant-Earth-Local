@@ -54,7 +54,7 @@ return(<div style={{backgroundColor:"#120802",backgroundImage:"radial-gradient(e
 <div aria-hidden="true" style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0,background:"radial-gradient(ellipse 200% 200% at 50% 50%,rgba(140,60,8,0.22) 0%,rgba(80,30,5,0.18) 40%,rgba(18,8,2,0.7) 75%,rgba(18,8,2,1) 100%)"}}/>
 <InteractiveGlobe coherence={coherence}/>
 <div style={{position:"fixed",inset:0,zIndex:2,pointerEvents:"none",background:"none"}}/>
-<div style={{position:"relative",zIndex:10,width:"100%",minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"0.5rem 1rem 0"}}>
+<div style={{position:"relative",zIndex:10,width:"100%",minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"clamp(4rem,8vh,6rem) 1rem 0"}}>
 <header style={{textAlign:"center",marginBottom:"clamp(0.3rem,0.8vh,0.6rem)",opacity:loaded?1:0,transition:"opacity 2.5s ease 0.4s"}}>
 <p style={{fontFamily:"monospace",fontSize:"clamp(0.55rem,1.1vw,0.7rem)",letterSpacing:"0.38em",textTransform:"uppercase",color:"rgba(212,160,60,0.7)",marginBottom:"clamp(0.5rem,1.5vh,1rem)"}}>A shared system where individual presence creates collective results � on your own path.</p>
 <div style={{position:"relative",display:"inline-block"}}>
