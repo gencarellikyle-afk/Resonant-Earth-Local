@@ -31,6 +31,6 @@ const text=result.content?.[0]?.text||"";
 const match=text.match(/[d.]+/);
 if(match)sentimentAvg=Math.max(0,Math.min(1,parseFloat(match[0])));
 }catch(e){sentimentAvg=0.5;}}
-const score=Math.max(0.1,Math.min(1,velocity*0.4+sentimentAvg*0.35+geoSpread*0.15+0.1));
+const safeSentiment=sentimentAvg||0.5;const score=Math.max(0.1,Math.min(1,velocity*0.4+safeSentiment*0.35+geoSpread*0.15+0.1));
 await supabase.from("coherence_snapshots").insert({score,signal_velocity:velocity,sentiment_avg:sentimentAvg,geo_spread:geoSpread,return_rate:0.1,signal_count:recentCount});
 return Response.json({score,velocity,sentimentAvg,geoSpread,signalCount:recentCount});}
