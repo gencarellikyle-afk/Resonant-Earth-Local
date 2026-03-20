@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/coherence/score",
+      "schedule": "*/5 * * * *"
+    }
+  ]
+}
