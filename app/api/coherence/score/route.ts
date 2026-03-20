@@ -26,7 +26,7 @@ method:"POST",
 headers:{"Content-Type":"application/json","x-api-key":process.env.ANTHROPIC_API_KEY,"anthropic-version":"2023-06-01"},
 body:JSON.stringify({model:"claude-haiku-4-5-20251001",max_tokens:200,messages:[{role:"user",content:"Score the collective presence and groundedness of these field signals on a scale from 0.0 to 1.0. 0 = scattered, fearful, disconnected. 1 = grounded, present, clear. Return only a JSON object like: {score: 0.72}. Signals: "+JSON.stringify(texts)}]})
 });
-const result=await response.json();console.log("anthropic result:",JSON.stringify(result).slice(0,500));
+const result=await response.json();
 const text=result.content?.[0]?.text||"";
 const match=text.match(/[\d.]+/);
 if(match)sentimentAvg=Math.max(0,Math.min(1,parseFloat(match[0])));
