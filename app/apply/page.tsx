@@ -35,27 +35,39 @@ const GRANT_TYPES = [
   }
 ];
 
+function generateRefId(fieldId) {
+  const base = fieldId || Date.now().toString();
+  const ts = Date.now().toString(36).toUpperCase();
+  const fragment = base.replace(/-/g,"").slice(-4).toUpperCase();
+  return "RE-" + fragment + "-" + ts.slice(-4);
+}
+
 export default function ApplyPage() {
   const [selectedType, setSelectedType] = useState(null);
   const [expandedType, setExpandedType] = useState(null);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [intendedUse, setIntendedUse] = useState("");
+  const [email, setEmail] = useState("");
   const [committed, setCommitted] = useState(false);
   const [fieldId, setFieldId] = useState("");
   const [signalCount, setSignalCount] = useState(0);
   const [firstSeen, setFirstSeen] = useState(null);
+  const [hasSentSignal, setHasSentSignal] = useState(false);
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
   const [flash, setFlash] = useState(false);
+  const [refId, setRefId] = useState("");
 
   useEffect(() => {
     const id = localStorage.getItem("re_field_id") || "";
     const count = parseInt(localStorage.getItem("re_signal_count") || "0");
     const seen = localStorage.getItem("re_first_seen") || null;
+    const lastSignal = localStorage.getItem("re_last_signal") || null;
     setFieldId(id);
     setSignalCount(count);
     setFirstSeen(seen);
+    setHasSentSignal(count > 0 || !!lastSignal);
   }, []);
 
   function getCoherenceThreshold() {
@@ -69,11 +81,7 @@ export default function ApplyPage() {
   }
 
   function handleCardClick(typeId) {
-    if (expandedType === typeId) {
-      setExpandedType(null);
-    } else {
-      setExpandedType(typeId);
-    }
+    setExpandedType(expandedType === typeId ? null : typeId);
   }
 
   function handleSelectType(typeId) {
@@ -91,11 +99,13 @@ export default function ApplyPage() {
     if (!description.trim()) { setError("Tell us what you are building or what you need support for."); return; }
     if (!intendedUse.trim()) { setError("Tell us how you will use this grant."); return; }
     if (!committed) { setError("Please confirm your understanding before submitting."); return; }
+    if (email && !/^[^s@]+@[^s@]+.[^s@]+$/.test(email)) { setError("Enter a valid email address or leave the field blank."); return; }
 
     const grant = selectedGrant;
     const amt = Number(amount);
-    if (amt < grant.rangeMin) { setError(`Minimum for ${grant.label} is $${grant.rangeMin.toLocaleString()}.`); return; }
+    if (amt < grant.rangeMin) { setError("Minimum for " + grant.label + " is $" + grant.rangeMin.toLocaleString() + "."); return; }
 
+    const ref = generateRefId(fieldId);
     setStatus("sending");
 
     try {
@@ -113,12 +123,18 @@ export default function ApplyPage() {
           intended_use: intendedUse.trim(),
           applicant_anonymous_id: fieldId || null,
           coherence_threshold_met: getCoherenceThreshold(),
+          notes: [
+            email ? "Contact: " + email : "No contact provided",
+            hasSentSignal ? "Signal presence: " + signalCount + " signal(s) in field" : "No prior field presence detected",
+            "Ref: " + ref
+          ].join(" | "),
           status: "pending"
         })
       });
 
       if (!res.ok) throw new Error("submission failed");
 
+      setRefId(ref);
       setStatus("success");
       setFlash(true);
       setTimeout(() => setFlash(false), 1500);
@@ -136,8 +152,13 @@ export default function ApplyPage() {
           <div style={{fontSize:"0.65rem",letterSpacing:"0.2em",color:"#FF6B3D",marginBottom:"2rem",textTransform:"uppercase"}}>Application Received</div>
           <h1 style={{fontFamily:"Georgia,serif",fontSize:"clamp(1.6rem,4vw,2.2rem)",color:"#F5E6D0",marginBottom:"1.5rem",fontWeight:"normal",fontStyle:"italic",lineHeight:1.3}}>Your application is in the field.</h1>
           <p style={{color:"#8A7A6A",fontSize:"0.85rem",lineHeight:1.8,marginBottom:"1rem"}}>The field has received what you brought. Your application will be reviewed with the same care you gave in writing it.</p>
-          <p style={{color:"#8A7A6A",fontSize:"0.85rem",lineHeight:1.8,marginBottom:"2.5rem"}}>This is not a transaction. It is the beginning of a relationship with the conscious economy.</p>
-          <div style={{fontSize:"0.6rem",letterSpacing:"0.15em",color:"#5A4A3A",marginBottom:"2.5rem",textTransform:"uppercase"}}>A shared system where individual presence creates collective results � on your own path.</div>
+          <p style={{color:"#8A7A6A",fontSize:"0.85rem",lineHeight:1.8,marginBottom:"2rem"}}>This is not a transaction. It is the beginning of a relationship with the conscious economy.</p>
+          <div style={{marginBottom:"2.5rem",padding:"1rem",border:"1px solid #2A1F15",borderRadius:"4px",backgroundColor:"rgba(255,107,61,0.03)"}}>
+            <div style={{fontSize:"0.58rem",letterSpacing:"0.18em",color:"#4A3A2A",textTransform:"uppercase",marginBottom:"0.5rem"}}>Your Reference</div>
+            <div style={{fontSize:"1rem",letterSpacing:"0.12em",color:"#FF6B3D",fontFamily:"monospace"}}>{refId}</div>
+            <div style={{fontSize:"0.62rem",color:"#3A2A1A",marginTop:"0.4rem"}}>Keep this. You may need it if you follow up.</div>
+          </div>
+          <div style={{fontSize:"0.6rem",letterSpacing:"0.15em",color:"#3A2A1A",marginBottom:"2.5rem",textTransform:"uppercase"}}>A shared system where individual presence creates collective results � on your own path.</div>
           <Link href="/" style={{fontSize:"0.65rem",letterSpacing:"0.15em",color:"#FF6B3D",textDecoration:"none",textTransform:"uppercase"}}>Return to the Field</Link>
         </div>
       </div>
@@ -161,7 +182,7 @@ export default function ApplyPage() {
               const isExpanded = expandedType === type.id;
               const isSelected = selectedType === type.id;
               return (
-                <div key={type.id} style={{border:`1px solid ${isSelected ? "#FF6B3D" : isExpanded ? "#4A3A2A" : "#2A1F15"}`,borderRadius:"4px",overflow:"hidden",transition:"border-color 0.2s",backgroundColor:isSelected?"rgba(255,107,61,0.04)":"transparent",cursor:"pointer"}} onClick={() => handleCardClick(type.id)}>
+                <div key={type.id} style={{border:"1px solid "+(isSelected?"#FF6B3D":isExpanded?"#4A3A2A":"#2A1F15"),borderRadius:"4px",overflow:"hidden",transition:"border-color 0.2s",backgroundColor:isSelected?"rgba(255,107,61,0.04)":"transparent",cursor:"pointer"}} onClick={() => handleCardClick(type.id)}>
                   <div style={{padding:"1rem 1.2rem",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
                     <div>
                       <div style={{fontSize:"0.8rem",letterSpacing:"0.08em",color:isSelected?"#FF6B3D":"#F5E6D0",marginBottom:"0.25rem",fontWeight:isSelected?"bold":"normal"}}>{type.label}</div>
@@ -169,16 +190,14 @@ export default function ApplyPage() {
                     </div>
                     <div style={{display:"flex",alignItems:"center",gap:"0.75rem",flexShrink:0,marginLeft:"1rem"}}>
                       <span style={{fontSize:"0.7rem",color:"#FF6B3D",letterSpacing:"0.05em"}}>{type.range}</span>
-                      <span style={{color:"#4A3A2A",fontSize:"0.7rem",transform:isExpanded?"rotate(180deg)":"rotate(0deg)",transition:"transform 0.2s"}}>?</span>
+                      <span style={{color:"#4A3A2A",fontSize:"0.7rem",transition:"transform 0.2s",display:"inline-block",transform:isExpanded?"rotate(180deg)":"rotate(0deg)"}}>?</span>
                     </div>
                   </div>
                   {isExpanded && (
                     <div style={{padding:"0 1.2rem 1.2rem",borderTop:"1px solid #2A1F15"}} onClick={e => e.stopPropagation()}>
                       <p style={{fontSize:"0.78rem",color:"#8A7A6A",lineHeight:1.85,marginBottom:"0.75rem",marginTop:"0.9rem"}}>{type.description}</p>
                       <p style={{fontSize:"0.72rem",color:"#6A5A4A",marginBottom:"1rem",lineHeight:1.6}}><span style={{color:"#4A3A2A"}}>For: </span>{type.forWhom}</p>
-                      <button onClick={() => handleSelectType(type.id)} style={{fontSize:"0.62rem",letterSpacing:"0.15em",color:"#120802",backgroundColor:"#FF6B3D",border:"none",padding:"0.5rem 1.2rem",cursor:"pointer",textTransform:"uppercase",borderRadius:"2px"}}>
-                        {isSelected ? "Selected ?" : "Select This Grant"}
-                      </button>
+                      <button onClick={() => handleSelectType(type.id)} style={{fontSize:"0.62rem",letterSpacing:"0.15em",color:"#120802",backgroundColor:"#FF6B3D",border:"none",padding:"0.5rem 1.2rem",cursor:"pointer",textTransform:"uppercase",borderRadius:"2px"}}>{isSelected ? "Selected ?" : "Select This Grant"}</button>
                     </div>
                   )}
                 </div>
@@ -210,22 +229,27 @@ export default function ApplyPage() {
               <textarea value={intendedUse} onChange={e => setIntendedUse(e.target.value)} placeholder="Be specific. The field invests in what is real." rows={5} style={{width:"100%",backgroundColor:"#1A0F08",border:"1px solid #2A1F15",color:"#F5E6D0",padding:"0.8rem",fontSize:"0.78rem",fontFamily:"monospace",lineHeight:1.8,borderRadius:"2px",outline:"none",resize:"vertical",boxSizing:"border-box"}}/>
             </div>
 
-            <div style={{marginBottom:"2.5rem",padding:"1.2rem",border:"1px solid #2A1F15",borderRadius:"4px",backgroundColor:"rgba(255,107,61,0.02)"}}>
+            <div style={{marginBottom:"2.5rem"}}>
+              <div style={{fontSize:"0.6rem",letterSpacing:"0.18em",color:"#6A5A4A",textTransform:"uppercase",marginBottom:"1.2rem"}}>Step 5 � Contact <span style={{color:"#3A2A1A",fontSize:"0.55rem",letterSpacing:"0.1em"}}>(Optional)</span></div>
+              <label style={{fontSize:"0.72rem",color:"#8A7A6A",display:"block",marginBottom:"0.6rem"}}>If you would like to be reached about your application, leave an email address. This is never required and never shared.</label>
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="your@email.com or leave blank" style={{backgroundColor:"#1A0F08",border:"1px solid #2A1F15",color:"#F5E6D0",padding:"0.6rem 0.8rem",fontSize:"0.78rem",fontFamily:"monospace",width:"100%",borderRadius:"2px",outline:"none",boxSizing:"border-box"}}/>
+            </div>
+
+            <div style={{marginBottom:"2rem",padding:"1.2rem",border:"1px solid #2A1F15",borderRadius:"4px",backgroundColor:"rgba(255,107,61,0.02)"}}>
               <label style={{display:"flex",alignItems:"flex-start",gap:"0.75rem",cursor:"pointer"}}>
-                <div onClick={() => setCommitted(!committed)} style={{width:"16px",height:"16px",border:`1px solid ${committed?"#FF6B3D":"#4A3A2A"}`,borderRadius:"2px",flexShrink:0,marginTop:"2px",backgroundColor:committed?"#FF6B3D":"transparent",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",transition:"all 0.15s"}}>
+                <div onClick={() => setCommitted(!committed)} style={{width:"16px",height:"16px",border:"1px solid "+(committed?"#FF6B3D":"#4A3A2A"),borderRadius:"2px",flexShrink:0,marginTop:"2px",backgroundColor:committed?"#FF6B3D":"transparent",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",transition:"all 0.15s"}}>
                   {committed && <span style={{color:"#120802",fontSize:"10px",fontWeight:"bold"}}>?</span>}
                 </div>
                 <span style={{fontSize:"0.75rem",color:"#8A7A6A",lineHeight:1.8}}>I understand this is an investment in the conscious economy, not a charitable gift. If what I build grows, I will consider contributing back to the field � not because I am required to, but because I understand how the system sustains itself.</span>
               </label>
             </div>
 
-            {fieldId && (
-              <div style={{marginBottom:"2rem",fontSize:"0.65rem",color:"#4A3A2A",lineHeight:1.7}}>
-                <span style={{color:"#3A2A1A"}}>Field presence detected. </span>
-                {signalCount > 0 && <span>{signalCount} signal{signalCount !== 1 ? "s" : ""} in the field. </span>}
-                <span style={{color:getCoherenceThreshold()?"#FF6B3D":"#3A2A1A"}}>{getCoherenceThreshold() ? "Coherence threshold met." : "Coherence threshold not yet met � your application will still be reviewed."}</span>
-              </div>
-            )}
+            <div style={{marginBottom:"2rem",padding:"1rem",border:"1px solid #1A0F08",borderRadius:"4px",fontSize:"0.65rem",lineHeight:1.8}}>
+              {hasSentSignal
+                ? <div style={{color:"#FF6B3D"}}>? Field presence detected � {signalCount} signal{signalCount!==1?"s":""} in the field. {getCoherenceThreshold()?"Coherence threshold met.":"Your application will still be reviewed."}</div>
+                : <div style={{color:"#3A2A1A"}}>No prior field presence detected from this device. Your application will still be reviewed � consider sending a signal to the field before or after you apply.</div>
+              }
+            </div>
 
             {error && <div style={{marginBottom:"1.5rem",fontSize:"0.72rem",color:"#FF6B3D",padding:"0.75rem",border:"1px solid rgba(255,107,61,0.3)",borderRadius:"2px"}}>{error}</div>}
 
@@ -237,7 +261,7 @@ export default function ApplyPage() {
 
         <div style={{marginTop:"4rem",paddingTop:"2rem",borderTop:"1px solid #1A0F08",fontSize:"0.6rem",color:"#3A2A1A",lineHeight:1.9}}>
           <p>Applications are reviewed by the field operator. There is no automated approval. Every application is read by a human who understands what you are building.</p>
-          <p style={{marginTop:"0.5rem"}}>Grant amounts are not guaranteed. The field invests in coherence and creation � not credentials or credentials alone.</p>
+          <p style={{marginTop:"0.5rem"}}>Grant amounts are not guaranteed. The field invests in coherence and creation � not credentials alone.</p>
           <div style={{marginTop:"1.5rem"}}><Link href="/" style={{color:"#4A3A2A",fontSize:"0.6rem",letterSpacing:"0.12em",textDecoration:"none",textTransform:"uppercase"}}>? Return to the Field</Link></div>
         </div>
 
