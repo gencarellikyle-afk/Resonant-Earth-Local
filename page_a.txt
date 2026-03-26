@@ -1,5 +1,5 @@
 "use client";
-import React,{useState,useEffect,useRef,useCallback}from"react";
+import React,{useState,useEffect,useRef}from"react";
 import dynamic from"next/dynamic";
 import Link from"next/link";
 import{createClient}from"@supabase/supabase-js";
@@ -7,7 +7,7 @@ const supabase=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL,process.env.NEX
 const FractalHeart=dynamic(()=>import("../components/FractalHeart"),{ssr:false});
 const TRANSMISSIONS=["The old systems end when enough of us stop running them.","This is not a movement. It is a new way for presence to create collective results.","Sovereignty is always available. Everything else is optional.","The conscious economy begins where personal bypass ends.","You do not have to believe anything new. You just stop running the same loops.","Presence is the new leverage. Collective results are the new norm.","Whatever path brought you here, this is one place to build something different.","The field responds to presence."];
 const STRIPE_CONTRIBUTION_URL="https://buy.stripe.com/5kQ9AUbeW9iA2oz21vffy00";
-const C={bg:"#120802",bgDeep:"#0A0401",gold:"#F0C040",ember:"#FF5722",copper:"#C8621A",white:"#FDF6EC"};
+const C={bg:"#0A0401",bgMid:"#2A1204",bgCenter:"#4A2208",gold:"#F0C040",ember:"#FF5722",copper:"#C8621A",white:"#FDF6EC"};
 function useFieldCount(){const[count,setCount]=useState(0);useEffect(()=>{supabase.from("signals").select("id").limit(1000).then(({data})=>{if(data)setCount(data.length);});const ch=supabase.channel("field-count").on("postgres_changes",{event:"INSERT",schema:"public",table:"signals"},()=>{setCount((n)=>n+1);}).subscribe();return()=>{void supabase.removeChannel(ch);};},[]);return count;}
 function useCoherence(){const[v,setV]=useState(0.4);const t=useRef(0);const surgeRef=useRef(0);const baseRef=useRef(0.48);useEffect(()=>{fetch("/api/coherence/latest").then(r=>r.json()).then(d=>{if(d.score&&!d.stale)baseRef.current=d.score;}).catch(()=>{});const refresh=setInterval(()=>{fetch("/api/coherence/latest").then(r=>r.json()).then(d=>{if(d.score&&!d.stale)baseRef.current=d.score;}).catch(()=>{});},5*60*1000);return()=>clearInterval(refresh);},[]);function surge(){surgeRef.current=1;setTimeout(()=>{surgeRef.current=0;},8000);}useEffect(()=>{const id=setInterval(()=>{t.current+=0.005;const wave=Math.sin(t.current*0.2)*0.06+Math.sin(t.current*0.5)*0.03+Math.sin(t.current*1.1)*0.01;const base=Math.max(0.1,Math.min(1,baseRef.current+wave));if(surgeRef.current>0){surgeRef.current=Math.max(0,surgeRef.current-0.004);setV(Math.min(1,base+surgeRef.current*0.5));}else{setV(base);}},50);return()=>clearInterval(id);},[]);return{v,surge};}
 function useTypewriter(text,speed=20){const[d,setD]=useState("");useEffect(()=>{setD("");let i=0;const id=setInterval(()=>{i++;setD(text.slice(0,i));if(i>=text.length)clearInterval(id);},speed);return()=>clearInterval(id);},[text,speed]);return d;}
