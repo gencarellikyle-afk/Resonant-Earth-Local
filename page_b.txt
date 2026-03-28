@@ -23,7 +23,8 @@ nodeSrc.forEach(({theta,phi,idx,rScale})=>{const p=torusPoint(theta,phi,breathe*
 const vg=ctx.createRadialGradient(cx,cy,S*0.26,cx,cy,S*0.52);vg.addColorStop(0,"rgba(10,4,1,0)");vg.addColorStop(1,"rgba(10,4,1,0.52)");ctx.fillStyle=vg;ctx.fillRect(0,0,S,S);
 }
 draw(0);return()=>cancelAnimationFrame(frameRef.current);},[]);
-return(<canvas ref={canvasRef} style={{position:"fixed" as const,top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"105vw",height:"105vw",zIndex:1,pointerEvents:"none" as const,opacity:1}}/>);}
+return(<canvas ref={canvasRef} style={{position:"fixed" as const,top:"50%",left:"50%",transform:"translate(-50%,-56%)",width:"min(820px,88vw)",height:"min(820px,88vw)",zIndex:1,pointerEvents:"none" as const,opacity:0.82}}/>);}
+
 
 
 

@@ -27,8 +27,8 @@ return(<div style={{backgroundColor:C.bg,minHeight:"100vh",width:"100%",position
 <CursorWarmth heartPos={heartPos}/>
 <div aria-hidden="true" style={{position:"fixed" as const,top:0,left:0,right:0,height:"52%",pointerEvents:"none" as const,zIndex:5,background:"linear-gradient(to bottom, rgba(10,4,1,0.92) 0%, rgba(10,4,1,0.52) 20%, rgba(10,4,1,0.10) 52%, rgba(10,4,1,0) 100%)"}}/>
 <div aria-hidden="true" style={{position:"fixed" as const,bottom:0,left:0,right:0,height:"52%",pointerEvents:"none" as const,zIndex:5,background:"linear-gradient(to top, rgba(10,4,1,0.95) 0%, rgba(10,4,1,0.58) 22%, rgba(10,4,1,0.12) 52%, rgba(10,4,1,0) 100%)"}}/>
-<div aria-hidden="true" style={{position:"fixed" as const,top:0,bottom:0,left:0,width:"20%",pointerEvents:"none" as const,zIndex:5,background:"linear-gradient(to right, rgba(10,4,1,0.90) 0%, rgba(10,4,1,0.38) 48%, rgba(10,4,1,0) 100%)"}}/>
-<div aria-hidden="true" style={{position:"fixed" as const,top:0,bottom:0,right:0,width:"20%",pointerEvents:"none" as const,zIndex:5,background:"linear-gradient(to left, rgba(10,4,1,0.90) 0%, rgba(10,4,1,0.38) 48%, rgba(10,4,1,0) 100%)"}}/>
+
+
 <div aria-hidden="true" style={{position:"fixed" as const,top:0,left:0,right:0,height:"58vh",pointerEvents:"none" as const,zIndex:6,background:"radial-gradient(ellipse 88% 55% at 50% 0%, rgba(255,148,32,"+(0.20+coherence*0.08)+") 0%, rgba(10,4,1,0) 100%)"}}/>
 <div aria-hidden="true" style={{position:"fixed" as const,bottom:0,left:0,right:0,height:"62vh",pointerEvents:"none" as const,zIndex:6,background:"radial-gradient(ellipse 88% 55% at 50% 100%, rgba(188,68,12,"+(0.22+coherence*0.08)+") 0%, rgba(10,4,1,0) 100%)"}}/>
 {transmitFlash&&<div aria-hidden="true" style={{position:"fixed" as const,inset:0,zIndex:50,pointerEvents:"none" as const,background:isContribution?"radial-gradient(ellipse 90% 90% at 50% 50%, rgba(255,240,120,0.26) 0%, rgba(248,200,50,0.18) 22%, rgba(255,168,28,0.10) 48%, rgba(240,120,20,0.05) 70%, rgba(10,4,1,0) 100%)":"radial-gradient(ellipse 90% 90% at 50% 50%, rgba(255,248,180,0.24) 0%, rgba(248,210,64,0.16) 22%, rgba(255,148,30,0.10) 48%, rgba(255,87,34,0.05) 70%, rgba(10,4,1,0) 100%)",transition:"opacity 3.0s ease"}}/>}
@@ -65,5 +65,7 @@ return(<div style={{backgroundColor:C.bg,minHeight:"100vh",width:"100%",position
 <div style={{minHeight:"clamp(3.5rem,5.5vh,4.8rem)",maxWidth:"min(560px,88vw)",width:"100%",display:"flex",alignItems:"center",justifyContent:"center",textAlign:"center" as const,marginTop:"clamp(0.8rem,1.8vh,1.5rem)"}}>
 <p style={{fontFamily:"Georgia,serif",fontStyle:"italic" as const,fontSize:"clamp(0.82rem,1.3vw,0.94rem)",lineHeight:2.1,color:C.white,whiteSpace:"pre-line" as const,opacity:txVisible?0.78:0,transition:"opacity 1.4s ease",textShadow:"0 2px 18px rgba(10,4,1,0.85)"}}>
 {displayed}{txVisible&&<span style={{opacity:0.18,fontStyle:"normal" as const}}>|</span>}</p></div></div></div></div>
+
+
 
 
