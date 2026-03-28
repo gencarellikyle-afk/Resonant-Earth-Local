@@ -28,7 +28,7 @@ ctx.clearRect(0,0,S,S);
 const breathe=1+Math.sin(t*0.7)*0.022*(0.5+coh*0.5);
 for(let l=0;l<LAYERS;l++){
 const layerFrac=l/(LAYERS-1);
-const scale=(28+l*7)*breathe;
+const scale=(48+l*11)*breathe;
 const pulse=Math.abs(Math.sin(t*0.9+l*0.38))*0.18;
 const baseOpacity=0.12+layerFrac*0.22+coh*0.18+pulse;
 const r=Math.round(255);
@@ -71,3 +71,5 @@ return()=>cancelAnimationFrame(frameId);
 },[]);
 return<canvas ref={canvasRef} className={className} style={{width:"100%",height:"100%",display:"block"}}/>;
 }
+
+
