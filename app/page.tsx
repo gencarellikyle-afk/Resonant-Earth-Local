@@ -29,7 +29,7 @@ return(<div style={{position:"fixed" as const,right:0,top:0,bottom:0,width:"172p
 
 
 
-function ToroidalField({coherence,ceremonyRef,signalPoints}:{coherence:number,ceremonyRef:React.MutableRefObject<number>,signalPoints:{lat:number,lng:number}[]}){const canvasRef=useRef(null);const cohRef=useRef(coherence);const frameRef=useRef(0);const timeRef=useRef(0);const sigRef=useRef(signalPoints);const lastFrameRef=useRef(0);const isMobile=useRef(false);useEffect(()=>{isMobile.current=window.innerWidth<768;},[]);useEffect(()=>{cohRef.current=coherence;},[coherence]);useEffect(()=>{sigRef.current=signalPoints;},[signalPoints]);useEffect(()=>{const canvas=canvasRef.current;if(!canvas)return;const ctx=canvas.getContext("2d");if(!ctx)return;const mobile=isMobile.current;const S=900;canvas.width=S;canvas.height=S;const cx=S/2,cy=S/2;const R=S*0.34;const r=S*0.13;const starsData=Array.from({length:mobile?60:130},()=>({x:Math.random()*S,y:Math.random()*S,s:Math.random()*1.0+0.2,a:Math.random()*0.28+0.08}));
+function ToroidalField({coherence,ceremonyRef,signalPoints}:{coherence:number,ceremonyRef:React.MutableRefObject<number>,signalPoints:{lat:number,lng:number}[]}){const canvasRef=useRef(null);const cohRef=useRef(coherence);const frameRef=useRef(0);const timeRef=useRef(0);const sigRef=useRef(signalPoints);const lastFrameRef=useRef(0);const isMobile=useRef(false);useEffect(()=>{isMobile.current=window.innerWidth<768;},[]);useEffect(()=>{cohRef.current=coherence;},[coherence]);useEffect(()=>{sigRef.current=signalPoints;},[signalPoints]);useEffect(()=>{const canvas=canvasRef.current;if(!canvas)return;const ctx=canvas.getContext("2d");if(!ctx)return;const mobile=isMobile.current;const S=900;const dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=S*dpr;canvas.height=S*dpr;ctx.scale(dpr,dpr);const cx=S/2,cy=S/2;const R=S*0.34;const r=S*0.13;const starsData=Array.from({length:mobile?60:130},()=>({x:Math.random()*S,y:Math.random()*S,s:Math.random()*1.0+0.2,a:Math.random()*0.28+0.08}));
 function torusPoint(theta,phi,rScale){const rr=r*rScale;const x=(R+rr*Math.cos(phi))*Math.cos(theta);const y=(R+rr*Math.cos(phi))*Math.sin(theta);const z=rr*Math.sin(phi);return{x,y,z};}
 function project(px,py,pz,rotX,rotY){const y2=py*Math.cos(rotX)-pz*Math.sin(rotX);const z2=py*Math.sin(rotX)+pz*Math.cos(rotX);const x3=px*Math.cos(rotY)+z2*Math.sin(rotY);const z3=-px*Math.sin(rotY)+z2*Math.cos(rotY);const fov=S*2.0;const d=fov/(fov+z3+S*0.5);return{px:cx+x3*d,py:cy+y2*d,z:z3,d};}
 function latLngToTorus(lat,lng){const theta=((lng+180)/360)*Math.PI*2;const phi=((lat+90)/180)*Math.PI*2;return{theta,phi};}
@@ -48,6 +48,7 @@ const vg=ctx.createRadialGradient(cx,cy,S*0.25,cx,cy,S*0.52);vg.addColorStop(0,"
 }
 draw(0);return()=>cancelAnimationFrame(frameRef.current);},[]);
 const opacityRef=useRef(0.65);useEffect(()=>{const id=setInterval(()=>{const target=ceremonyRef&&ceremonyRef.current>0?Math.min(1,0.65+ceremonyRef.current*0.35):0.65;opacityRef.current+=(target-opacityRef.current)*0.08;if(canvasRef.current)canvasRef.current.style.opacity=String(opacityRef.current);},16);return()=>clearInterval(id);},[]);return(<canvas ref={canvasRef} style={{position:"fixed" as const,top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"105vw",height:"105vw",zIndex:1,pointerEvents:"none" as const,opacity:0.65}}/>);}
+
 
 
 
