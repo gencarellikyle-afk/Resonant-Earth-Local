@@ -16,7 +16,8 @@ nodeSrc.forEach(({theta,phi,idx,rScale:nRScale})=>{const p=torusPoint(theta,phi,
 const vg=ctx.createRadialGradient(cx,cy,S*0.25,cx,cy,S*0.52);vg.addColorStop(0,"rgba(10,4,1,0)");vg.addColorStop(1,"rgba(10,4,1,0.52)");ctx.fillRect(0,0,S,S);ctx.fillStyle=vg;ctx.fillRect(0,0,S,S);
 }
 draw(0);return()=>cancelAnimationFrame(frameRef.current);},[]);
-return(<canvas ref={canvasRef} style={{position:"fixed" as const,top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"105vw",height:"105vw",zIndex:1,pointerEvents:"none" as const,opacity:0.65}}/>);}
+const [canvasOpacity,setCanvasOpacity]=React.useState(0.65);React.useEffect(()=>{const id=setInterval(()=>{const target=ceremonyRef&&ceremonyRef.current>0?Math.min(1,0.65+ceremonyRef.current*0.35):0.65;setCanvasOpacity(prev=>prev+(target-prev)*0.08);},16);return()=>clearInterval(id);},[]);return(<canvas ref={canvasRef} style={{position:"fixed" as const,top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"105vw",height:"105vw",zIndex:1,pointerEvents:"none" as const,opacity:canvasOpacity}}/>);}
+
 
 
 
