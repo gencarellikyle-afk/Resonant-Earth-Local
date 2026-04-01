@@ -27,6 +27,7 @@ return(<div style={{position:"fixed" as const,right:0,top:0,bottom:0,width:"172p
 
 
 
+
 function ToroidalField({coherence,ceremonyRef,signalPoints}:{coherence:number,ceremonyRef:React.MutableRefObject<number>,signalPoints:{lat:number,lng:number}[]}){const canvasRef=useRef(null);const cohRef=useRef(coherence);const frameRef=useRef(0);const timeRef=useRef(0);const sigRef=useRef(signalPoints);const lastFrameRef=useRef(0);const isMobile=useRef(false);useEffect(()=>{isMobile.current=window.innerWidth<768;},[]);useEffect(()=>{cohRef.current=coherence;},[coherence]);useEffect(()=>{sigRef.current=signalPoints;},[signalPoints]);useEffect(()=>{const canvas=canvasRef.current;if(!canvas)return;const ctx=canvas.getContext("2d");if(!ctx)return;const mobile=isMobile.current;const S=900;canvas.width=S;canvas.height=S;const cx=S/2,cy=S/2;const R=S*0.34;const r=S*0.13;const starsData=Array.from({length:mobile?60:130},()=>({x:Math.random()*S,y:Math.random()*S,s:Math.random()*1.0+0.2,a:Math.random()*0.28+0.08}));
 function torusPoint(theta,phi,rScale){const rr=r*rScale;const x=(R+rr*Math.cos(phi))*Math.cos(theta);const y=(R+rr*Math.cos(phi))*Math.sin(theta);const z=rr*Math.sin(phi);return{x,y,z};}
 function project(px,py,pz,rotX,rotY){const y2=py*Math.cos(rotX)-pz*Math.sin(rotX);const z2=py*Math.sin(rotX)+pz*Math.cos(rotX);const x3=px*Math.cos(rotY)+z2*Math.sin(rotY);const z3=-px*Math.sin(rotY)+z2*Math.cos(rotY);const fov=S*2.0;const d=fov/(fov+z3+S*0.5);return{px:cx+x3*d,py:cy+y2*d,z:z3,d};}
@@ -98,7 +99,7 @@ useEffect(()=>{isMobile.current=window.innerWidth<768;},[]);
 useEffect(()=>{setTimeout(()=>setLoaded(true),400);},[]);useEffect(()=>{const label=getCoherenceLabel(coherence);document.title="Resonant Earth \u00B7 "+label;},[coherence]);
 useEffect(()=>{if(isMobile.current)return;function m(e){mouseRef.current={x:(e.clientX/window.innerWidth-0.5)*2,y:(e.clientY/window.innerHeight-0.5)*2};}window.addEventListener("mousemove",m);return()=>window.removeEventListener("mousemove",m);},[]);
 useEffect(()=>{if(isMobile.current)return;let f;let hx=0,hy=0;function tick(){f=requestAnimationFrame(tick);const{x,y}=mouseRef.current;hx+=(-x*11-hx)*0.038;hy+=(-y*8-hy)*0.038;setHeartOffset({x:hx,y:hy});}tick();return()=>cancelAnimationFrame(f);},[]);
-useEffect(()=>{const id=setInterval(()=>{setTxVisible(false);setTimeout(()=>{const n=(txIndex+1)%liveTransmissions.length;setTxIndex(n);setTxText(liveTransmissions[n]);setTxVisible(true);},1400);},14000);return()=>clearInterval(id);},[txIndex]);
+useEffect(()=>{const id=setInterval(()=>{setTxVisible(false);setTimeout(()=>{const n=(txIndex+1)%TRANSMISSIONS.length;setTxIndex(n);setTxText(TRANSMISSIONS[n]);setTxVisible(true);},1400);},14000);return()=>clearInterval(id);},[txIndex]);
 function triggerCeremony(){surge();ceremonyRef.current=1.8;for(let i=0;i<6;i++){setTimeout(()=>{pulseRingsRef.current.push({r:0,alpha:0.75-i*0.08});},i*350);}}
 return(<div style={{backgroundColor:C.bg,minHeight:"100vh",width:"100%",position:"relative" as const,overflowX:"hidden" as const,cursor:"crosshair" as const}}>
 <div aria-hidden="true" style={{position:"fixed" as const,inset:0,pointerEvents:"none" as const,zIndex:0,background:"radial-gradient(ellipse 180% 180% at 50% 42%, #4A2208 0%, #2A1204 38%, #180802 62%, #0A0401 100%)"}}/>
@@ -145,6 +146,7 @@ return(<div style={{backgroundColor:C.bg,minHeight:"100vh",width:"100%",position
 <div style={{minHeight:"clamp(4.2rem,7vh,5.8rem)",maxWidth:"min(600px,90vw)",width:"100%",display:"flex",alignItems:"center",justifyContent:"center",textAlign:"center" as const,marginTop:"clamp(1.8rem,3.8vh,3rem)",opacity:loaded?1:0,transition:"opacity 2.5s ease 2.2s"}}>
 <p style={{fontFamily:"Georgia,serif",fontStyle:"italic" as const,fontSize:"clamp(0.95rem,1.8vw,1.1rem)",lineHeight:1.95,color:C.white,whiteSpace:"pre-line" as const,opacity:txVisible?0.92:0,transition:"opacity 1.4s ease",textShadow:"0 2px 22px rgba(10,4,1,0.88)"}}>
 {displayed}{txVisible&&<span style={{opacity:0.22,fontStyle:"normal" as const}}>|</span>}</p></div></div>
+
 
 
 
