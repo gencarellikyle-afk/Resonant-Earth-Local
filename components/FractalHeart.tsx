@@ -41,7 +41,7 @@ const totalEnergy=coh+he*0.45;
 ctx.clearRect(0,0,S,S);
 const bgR=95+totalEnergy*55;
 const bg=ctx.createRadialGradient(cx,cy,0,cx,cy,bgR);
-bg.addColorStop(0,"rgba(255,195,55,"+(0.18+totalEnergy*0.22)+")");
+bg.addColorStop(0,"rgba(255,195,55,"+(0.28+totalEnergy*0.32)+")");
 bg.addColorStop(0.28,"rgba(210,88,10,"+(0.09+totalEnergy*0.12)+")");
 bg.addColorStop(0.65,"rgba(120,32,4,"+(0.04+totalEnergy*0.06)+")");
 bg.addColorStop(1,"rgba(10,4,1,0)");
@@ -111,4 +111,5 @@ draw();return()=>cancelAnimationFrame(frameId);
 },[]);
 return<canvas ref={canvasRef} className={className} style={{width:"100%",height:"100%",display:"block"}}/>;
 }
+
 
