@@ -47,7 +47,8 @@ nodeSrc.forEach(({theta,phi,idx,rScale:nRScale})=>{const p=torusPoint(theta,phi,
 const vg=ctx.createRadialGradient(cx,cy,S*0.25,cx,cy,S*0.52);vg.addColorStop(0,"rgba(10,4,1,0)");vg.addColorStop(1,"rgba(10,4,1,0.52)");ctx.fillRect(0,0,S,S);ctx.fillStyle=vg;ctx.fillRect(0,0,S,S);
 }
 draw(0);return()=>cancelAnimationFrame(frameRef.current);},[]);
-const opacityRef=useRef(0.65);useEffect(()=>{scrollRef.current=scrollPct;},[scrollPct]);useEffect(()=>{const id=setInterval(()=>{const target=ceremonyRef&&ceremonyRef.current>0?Math.min(1,0.65+ceremonyRef.current*0.35):0.65;opacityRef.current+=(target-opacityRef.current)*0.08;if(canvasRef.current){const scrollFade=1-scrollRef.current*0.55;canvasRef.current.style.opacity=String(Math.max(0.08,opacityRef.current*scrollFade));canvasRef.current.style.transform="translate(-50%,-50%)";}},16);return()=>clearInterval(id);},[]);return(<canvas ref={canvasRef} style={{position:"fixed" as const,top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"105vw",height:"105vw",zIndex:1,pointerEvents:"none" as const,opacity:0.65}}/>);}
+const opacityRef=useRef(0.65);useEffect(()=>{scrollRef.current=scrollPct;},[scrollPct]);useEffect(()=>{const id=setInterval(()=>{const target=ceremonyRef&&ceremonyRef.current>0?Math.min(1,0.65+ceremonyRef.current*0.35):0.65;opacityRef.current+=(target-opacityRef.current)*0.08;if(canvasRef.current){const scrollFade=1-scrollRef.current*0.28;canvasRef.current.style.opacity=String(Math.max(0.08,opacityRef.current*scrollFade));canvasRef.current.style.transform="translate(-50%,-50%)";}},16);return()=>clearInterval(id);},[]);return(<canvas ref={canvasRef} style={{position:"fixed" as const,top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"105vw",height:"105vw",zIndex:1,pointerEvents:"none" as const,opacity:0.65}}/>);}
+
 
 
 
@@ -120,7 +121,7 @@ return(<div style={{backgroundColor:C.bg,minHeight:"100vh",width:"100%",position
 <SignalWhispers signals={feedSignals}/>
 <FieldDataPanel coherence={coherence} fieldCount={fieldCount} signals={allSignals}/>
 <div aria-hidden="true" style={{position:"fixed" as const,top:0,left:0,right:0,height:"38vh",pointerEvents:"none" as const,zIndex:3,background:"radial-gradient(ellipse 100% 100% at 50% 0%, rgba(255,140,30,"+(0.11+coherence*0.07)+") 0%, rgba(200,80,10,"+(0.05+coherence*0.03)+") 50%, rgba(10,4,1,0) 100%)"}}/>
-<div aria-hidden="true" style={{position:"fixed" as const,bottom:0,left:0,right:0,height:"38vh",pointerEvents:"none" as const,zIndex:3,background:"linear-gradient(to top, rgba(10,4,1,"+(0.88+coherence*0.08)+") 0%, rgba(10,4,1,"+(0.55+coherence*0.06)+") 40%, rgba(10,4,1,0.12) 75%, rgba(10,4,1,0) 100%)"}}/>
+<div aria-hidden="true" style={{position:"fixed" as const,bottom:0,left:0,right:0,height:"38vh",pointerEvents:"none" as const,zIndex:3,background:"linear-gradient(to top, rgba(10,4,1,"+(0.65+coherence*0.06)+") 0%, rgba(10,4,1,"+(0.55+coherence*0.06)+") 40%, rgba(10,4,1,0.12) 75%, rgba(10,4,1,0) 100%)"}}/>
 <div aria-hidden="true" style={{position:"fixed" as const,inset:0,pointerEvents:"none" as const,zIndex:2,background:"radial-gradient(ellipse 60% 68% at 50% 50%, rgba(10,4,1,0) 0%, rgba(10,4,1,0.02) 28%, rgba(10,4,1,0.32) 54%, rgba(10,4,1,0.62) 74%, rgba(10,4,1,0.78) 100%)"}}/>
 <TransmissionRings pulseRingsRef={pulseRingsRef}/>
 <div style={{position:"fixed",right:0,top:0,width:"1px",height:scrollPct*100+"vh",background:"linear-gradient(to bottom, rgba(240,192,64,0.0), rgba(240,192,64,0.55))",zIndex:60,pointerEvents:"none",transition:"height 0.1s linear"}}/>
@@ -157,6 +158,7 @@ return(<div style={{backgroundColor:C.bg,minHeight:"100vh",width:"100%",position
 <div style={{minHeight:"clamp(4.2rem,7vh,5.8rem)",maxWidth:"min(600px,90vw)",width:"100%",display:"flex",alignItems:"center",justifyContent:"center",textAlign:"center" as const,marginTop:"clamp(1.8rem,3.8vh,3rem)",opacity:loaded?1:0,transition:"opacity 2.5s ease 2.2s"}}>
 <p style={{fontFamily:"Georgia,serif",fontStyle:"italic" as const,fontSize:"clamp(0.95rem,1.8vw,1.1rem)",lineHeight:1.95,color:C.white,whiteSpace:"pre-line" as const,opacity:txVisible?0.92:0,transition:"opacity 1.4s ease",textShadow:"0 2px 22px rgba(10,4,1,0.88)"}}>
 {displayed}{txVisible&&<span style={{opacity:0.22,fontStyle:"normal" as const}}>|</span>}</p></div></div>
+
 
 
 
