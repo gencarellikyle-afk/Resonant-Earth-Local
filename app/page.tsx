@@ -5,7 +5,7 @@ import Link from"next/link";
 import{createClient}from"@supabase/supabase-js";
 const supabase=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL,process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 const FractalHeart=dynamic(()=>import("../components/FractalHeart"),{ssr:false});
-const TRANSMISSIONS=["The old systems end when enough of us stop running them.","This is not a movement. It is a new way for presence to create collective results.","Sovereignty is always available. Everything else is optional.","The conscious economy begins where personal bypass ends.","You do not have to believe anything new. You just stop running the same loops.","Presence is the new leverage. Collective results are the new norm.","Whatever path brought you here, this is one place to build something different.","The field responds to presence."];
+const TRANSMISSIONS=["The old systems end when enough of us stop running them.","This is not a movement. It is a new way for presence to create collective results.","Sovereignty is always available. Everything else is optional.","The conscious economy begins where personal bypass ends.","You do not have to believe anything new. You just stop running the same loops.","Presence is the new leverage. Collective results are the new norm.","Whatever path brought you here, this is one place to build something different.","The field responds to presence."];function useLiveTransmissions(){const[txs,setTxs]=useState(TRANSMISSIONS);useEffect(()=>{supabase.from("signals").select("text").order("created_at",{ascending:false}).limit(12).then(({data})=>{if(data&&data.length>=4){setTxs(data.map(d=>d.text));}});},[]);return txs;}
 const STRIPE_CONTRIBUTION_URL="https://buy.stripe.com/5kQ9AUbeW9iA2oz21vffy00";
 const C={bg:"#0A0401",bgMid:"#2A1204",bgCenter:"#4A2208",gold:"#F0C040",ember:"#FF5722",copper:"#C8621A",white:"#FDF6EC"};
 function useFieldCount(){const[count,setCount]=useState(0);useEffect(()=>{supabase.from("signals").select("id").limit(1000).then(({data})=>{if(data)setCount(data.length);});const ch=supabase.channel("field-count").on("postgres_changes",{event:"INSERT",schema:"public",table:"signals"},()=>{setCount((n)=>n+1);}).subscribe();return()=>{void supabase.removeChannel(ch);};},[]);return count;}
@@ -20,6 +20,7 @@ function FieldDataPanel({coherence,fieldCount,signals}:{coherence:number,fieldCo
 return(<div style={{position:"fixed" as const,right:0,top:0,bottom:0,width:"172px",zIndex:4,pointerEvents:"none" as const,display:"flex",flexDirection:"column" as const,justifyContent:"center",padding:"0 18px 0 0",gap:"1.4rem",alignItems:"flex-end"}}>
 {dataPoints.map(({label,value})=>(<div key={label} style={{textAlign:"right" as const}}><p style={{fontFamily:"monospace",fontSize:"0.55rem",letterSpacing:"0.18em",textTransform:"uppercase" as const,color:C.copper,opacity:0.62,margin:"0 0 2px 0"}}>{label}</p><p style={{fontFamily:"monospace",fontSize:"0.75rem",color:C.gold,opacity:0.58,margin:0,letterSpacing:"0.08em"}}>{value}</p></div>))}
 </div>);}
+
 
 
 
@@ -91,13 +92,13 @@ return(<div style={{width:"100%",maxWidth:"min(520px,90vw)",margin:"0 auto",disp
 
 
 
-export default function HomePage(){const{v:coherence,surge}=useCoherence();const fieldCount=useFieldCount();const{identity,claimIdentity,setFieldName}=useFieldIdentity();const ceremonyRef=useRef(0);const pulseRingsRef=useRef<{r:number,alpha:number}[]>([]);const[transmitFlash,setTransmitFlash]=useState(false);const[hovered,setHovered]=useState(false);const[loaded,setLoaded]=useState(false);const[txIndex,setTxIndex]=useState(0);const[txVisible,setTxVisible]=useState(true);const[txText,setTxText]=useState(TRANSMISSIONS[0]);const displayed=useTypewriter(txVisible?txText:"",20);const mouseRef=useRef({x:0,y:0});const[heartOffset,setHeartOffset]=useState({x:0,y:0});const [scrollPct,setScrollPct]=useState(0);const isMobile=useRef(false);const pct=Math.round(coherence*100);const label=getCoherenceLabel(coherence);const[signalPoints,setSignalPoints]=useState([]);const[allSignals,setAllSignals]=useState([]);const[feedSignals,setFeedSignals]=useState([]);
+export default function HomePage(){const{v:coherence,surge}=useCoherence();const fieldCount=useFieldCount();const{identity,claimIdentity,setFieldName}=useFieldIdentity();const ceremonyRef=useRef(0);const pulseRingsRef=useRef<{r:number,alpha:number}[]>([]);const[transmitFlash,setTransmitFlash]=useState(false);const[hovered,setHovered]=useState(false);const[loaded,setLoaded]=useState(false);const liveTransmissions=useLiveTransmissions();const[txIndex,setTxIndex]=useState(0);const[txVisible,setTxVisible]=useState(true);const[txText,setTxText]=useState(TRANSMISSIONS[0]);const displayed=useTypewriter(txVisible?txText:"",20);const mouseRef=useRef({x:0,y:0});const[heartOffset,setHeartOffset]=useState({x:0,y:0});const [scrollPct,setScrollPct]=useState(0);const isMobile=useRef(false);const pct=Math.round(coherence*100);const label=getCoherenceLabel(coherence);const[signalPoints,setSignalPoints]=useState([]);const[allSignals,setAllSignals]=useState([]);const[feedSignals,setFeedSignals]=useState([]);
 useEffect(()=>{supabase.from("signals").select("id,text,lat,lng,country,created_at").order("created_at",{ascending:false}).limit(30).then(({data})=>{if(data){setAllSignals(data);setSignalPoints(data.filter(d=>d.lat&&d.lng).map(d=>({lat:d.lat,lng:d.lng})));setFeedSignals(data);}});const ch=supabase.channel("torus-signals").on("postgres_changes",{event:"INSERT",schema:"public",table:"signals"},(p)=>{setAllSignals(prev=>[p.new,...prev].slice(0,30));setFeedSignals(prev=>[p.new,...prev].slice(0,30));if(p.new.lat&&p.new.lng)setSignalPoints(prev=>[{lat:p.new.lat,lng:p.new.lng},...prev].slice(0,30));}).subscribe();return()=>{supabase.removeChannel(ch);};},[]);
 useEffect(()=>{isMobile.current=window.innerWidth<768;},[]);
-useEffect(()=>{setTimeout(()=>setLoaded(true),400);},[]);
+useEffect(()=>{setTimeout(()=>setLoaded(true),400);},[]);useEffect(()=>{const label=getCoherenceLabel(coherence);document.title="Resonant Earth \u00B7 "+label;},[coherence]);
 useEffect(()=>{if(isMobile.current)return;function m(e){mouseRef.current={x:(e.clientX/window.innerWidth-0.5)*2,y:(e.clientY/window.innerHeight-0.5)*2};}window.addEventListener("mousemove",m);return()=>window.removeEventListener("mousemove",m);},[]);
 useEffect(()=>{if(isMobile.current)return;let f;let hx=0,hy=0;function tick(){f=requestAnimationFrame(tick);const{x,y}=mouseRef.current;hx+=(-x*11-hx)*0.038;hy+=(-y*8-hy)*0.038;setHeartOffset({x:hx,y:hy});}tick();return()=>cancelAnimationFrame(f);},[]);
-useEffect(()=>{const id=setInterval(()=>{setTxVisible(false);setTimeout(()=>{const n=(txIndex+1)%TRANSMISSIONS.length;setTxIndex(n);setTxText(TRANSMISSIONS[n]);setTxVisible(true);},1400);},14000);return()=>clearInterval(id);},[txIndex]);
+useEffect(()=>{const id=setInterval(()=>{setTxVisible(false);setTimeout(()=>{const n=(txIndex+1)%liveTransmissions.length;setTxIndex(n);setTxText(liveTransmissions[n]);setTxVisible(true);},1400);},14000);return()=>clearInterval(id);},[txIndex]);
 function triggerCeremony(){surge();ceremonyRef.current=1.8;for(let i=0;i<6;i++){setTimeout(()=>{pulseRingsRef.current.push({r:0,alpha:0.75-i*0.08});},i*350);}}
 return(<div style={{backgroundColor:C.bg,minHeight:"100vh",width:"100%",position:"relative" as const,overflowX:"hidden" as const,cursor:"crosshair" as const}}>
 <div aria-hidden="true" style={{position:"fixed" as const,inset:0,pointerEvents:"none" as const,zIndex:0,background:"radial-gradient(ellipse 180% 180% at 50% 42%, #4A2208 0%, #2A1204 38%, #180802 62%, #0A0401 100%)"}}/>
@@ -144,6 +145,9 @@ return(<div style={{backgroundColor:C.bg,minHeight:"100vh",width:"100%",position
 <div style={{minHeight:"clamp(4.2rem,7vh,5.8rem)",maxWidth:"min(600px,90vw)",width:"100%",display:"flex",alignItems:"center",justifyContent:"center",textAlign:"center" as const,marginTop:"clamp(1.8rem,3.8vh,3rem)",opacity:loaded?1:0,transition:"opacity 2.5s ease 2.2s"}}>
 <p style={{fontFamily:"Georgia,serif",fontStyle:"italic" as const,fontSize:"clamp(0.95rem,1.8vw,1.1rem)",lineHeight:1.95,color:C.white,whiteSpace:"pre-line" as const,opacity:txVisible?0.92:0,transition:"opacity 1.4s ease",textShadow:"0 2px 22px rgba(10,4,1,0.88)"}}>
 {displayed}{txVisible&&<span style={{opacity:0.22,fontStyle:"normal" as const}}>|</span>}</p></div></div>
+
+
+
 
 
 
