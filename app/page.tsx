@@ -5,7 +5,7 @@ import Link from"next/link";
 import{createClient}from"@supabase/supabase-js";
 const supabase=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL,process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 const FractalHeart=dynamic(()=>import("../components/FractalHeart"),{ssr:false});
-const TRANSMISSIONS=["The old systems end when enough of us stop running them.","This is not a movement. It is a new way for presence to create collective results.","Sovereignty is always available. Everything else is optional.","The conscious economy begins where personal bypass ends.","You do not have to believe anything new. You just stop running the same loops.","Presence is the new leverage. Collective results are the new norm.","Whatever path brought you here, this is one place to build something different.","The field responds to presence."];function useLiveTransmissions(){const[txs,setTxs]=useState(TRANSMISSIONS);useEffect(()=>{supabase.from("signals").select("text").order("created_at",{ascending:false}).limit(12).then(({data})=>{if(data&&data.length>=4){setTxs(data.map(d=>d.text));}});},[]);return txs;}
+const TRANSMISSIONS=["The old systems end when enough of us stop running them.","This is not a movement. It is a new way for presence to create collective results.","Sovereignty is always available. Everything else is optional.","The conscious economy begins where personal bypass ends.","You do not have to believe anything new. You just stop running the same loops.","Presence is the new leverage. Collective results are the new norm.","Whatever path brought you here, this is one place to build something different.","The field responds to presence."];function useLiveTransmissions(){return TRANSMISSIONS;}
 const STRIPE_CONTRIBUTION_URL="https://buy.stripe.com/5kQ9AUbeW9iA2oz21vffy00";
 const C={bg:"#0A0401",bgMid:"#2A1204",bgCenter:"#4A2208",gold:"#F0C040",ember:"#FF5722",copper:"#C8621A",white:"#FDF6EC"};
 function useFieldCount(){const[count,setCount]=useState(0);useEffect(()=>{supabase.from("signals").select("id").limit(1000).then(({data})=>{if(data)setCount(data.length);});const ch=supabase.channel("field-count").on("postgres_changes",{event:"INSERT",schema:"public",table:"signals"},()=>{setCount((n)=>n+1);}).subscribe();return()=>{void supabase.removeChannel(ch);};},[]);return count;}
@@ -20,6 +20,7 @@ function FieldDataPanel({coherence,fieldCount,signals}:{coherence:number,fieldCo
 return(<div style={{position:"fixed" as const,right:0,top:0,bottom:0,width:"172px",zIndex:4,pointerEvents:"none" as const,display:"flex",flexDirection:"column" as const,justifyContent:"center",padding:"0 18px 0 0",gap:"1.4rem",alignItems:"flex-end"}}>
 {dataPoints.map(({label,value})=>(<div key={label} style={{textAlign:"right" as const}}><p style={{fontFamily:"monospace",fontSize:"0.55rem",letterSpacing:"0.18em",textTransform:"uppercase" as const,color:C.copper,opacity:0.62,margin:"0 0 2px 0"}}>{label}</p><p style={{fontFamily:"monospace",fontSize:"0.75rem",color:C.gold,opacity:0.58,margin:0,letterSpacing:"0.08em"}}>{value}</p></div>))}
 </div>);}
+
 
 
 
