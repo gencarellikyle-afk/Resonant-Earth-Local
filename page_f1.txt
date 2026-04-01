@@ -9,7 +9,7 @@ function triggerCeremony(isContrib?:boolean){surge();ceremonyRef.current=1.8;set
 return(<div style={{backgroundColor:C.bg,minHeight:"100vh",width:"100%",position:"relative" as const,overflowX:"hidden" as const,cursor:"crosshair" as const}}>
 <div aria-hidden="true" style={{position:"fixed" as const,inset:0,pointerEvents:"none" as const,zIndex:0,background:"radial-gradient(ellipse 180% 180% at 50% 42%, #4A2208 0%, #2A1204 38%, #180802 62%, #0A0401 100%)"}}/>
 <BreathingRings coherence={coherence} hovered={hovered}/>
-<ToroidalField coherence={coherence} ceremonyRef={ceremonyRef} signalPoints={loaded?signalPoints:[]}/>
+<ToroidalField coherence={coherence} ceremonyRef={ceremonyRef} signalPoints={loaded?signalPoints:[]} scrollPct={scrollPct}/>
 <CursorWarmth heartPos={{x:typeof window!=="undefined"?window.innerWidth/2:760,y:typeof window!=="undefined"?window.innerHeight*0.44:380}}/>
 <SignalWhispers signals={feedSignals}/>
 <FieldDataPanel coherence={coherence} fieldCount={fieldCount} signals={allSignals}/>
@@ -51,6 +51,7 @@ return(<div style={{backgroundColor:C.bg,minHeight:"100vh",width:"100%",position
 <div style={{minHeight:"clamp(4.2rem,7vh,5.8rem)",maxWidth:"min(600px,90vw)",width:"100%",display:"flex",alignItems:"center",justifyContent:"center",textAlign:"center" as const,marginTop:"clamp(1.8rem,3.8vh,3rem)",opacity:loaded?1:0,transition:"opacity 2.5s ease 2.2s"}}>
 <p style={{fontFamily:"Georgia,serif",fontStyle:"italic" as const,fontSize:"clamp(0.95rem,1.8vw,1.1rem)",lineHeight:1.95,color:C.white,whiteSpace:"pre-line" as const,opacity:txVisible?0.92:0,transition:"opacity 1.4s ease",textShadow:"0 2px 22px rgba(10,4,1,0.88)"}}>
 {displayed}{txVisible&&<span style={{opacity:0.22,fontStyle:"normal" as const}}>|</span>}</p></div></div>
+
 
 
 

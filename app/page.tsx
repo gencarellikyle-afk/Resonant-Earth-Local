@@ -29,7 +29,7 @@ return(<div style={{position:"fixed" as const,right:0,top:0,bottom:0,width:"172p
 
 
 
-function ToroidalField({coherence,ceremonyRef,signalPoints}:{coherence:number,ceremonyRef:React.MutableRefObject<number>,signalPoints:{lat:number,lng:number}[]}){const canvasRef=useRef(null);const cohRef=useRef(coherence);const frameRef=useRef(0);const timeRef=useRef(0);const sigRef=useRef(signalPoints);const lastFrameRef=useRef(0);const isMobile=useRef(false);useEffect(()=>{isMobile.current=window.innerWidth<768;},[]);useEffect(()=>{cohRef.current=coherence;},[coherence]);useEffect(()=>{sigRef.current=signalPoints;},[signalPoints]);useEffect(()=>{const canvas=canvasRef.current;if(!canvas)return;const ctx=canvas.getContext("2d");if(!ctx)return;const mobile=isMobile.current;const S=900;const dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=S*dpr;canvas.height=S*dpr;ctx.scale(dpr,dpr);const cx=S/2,cy=S/2;const R=S*0.34;const r=S*0.13;const starsData=Array.from({length:mobile?60:130},()=>({x:Math.random()*S,y:Math.random()*S,s:Math.random()*1.0+0.2,a:Math.random()*0.28+0.08}));
+function ToroidalField({coherence,ceremonyRef,signalPoints,scrollPct=0}:{coherence:number,ceremonyRef:React.MutableRefObject<number>,signalPoints:{lat:number,lng:number}[],scrollPct?:number}){const scrollRef=useRef(0);const canvasRef=useRef(null);const cohRef=useRef(coherence);const frameRef=useRef(0);const timeRef=useRef(0);const sigRef=useRef(signalPoints);const lastFrameRef=useRef(0);const isMobile=useRef(false);useEffect(()=>{isMobile.current=window.innerWidth<768;},[]);useEffect(()=>{cohRef.current=coherence;},[coherence]);useEffect(()=>{sigRef.current=signalPoints;},[signalPoints]);useEffect(()=>{const canvas=canvasRef.current;if(!canvas)return;const ctx=canvas.getContext("2d");if(!ctx)return;const mobile=isMobile.current;const S=900;const dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=S*dpr;canvas.height=S*dpr;ctx.scale(dpr,dpr);const cx=S/2,cy=S/2;const R=S*0.34;const r=S*0.13;const starsData=Array.from({length:mobile?60:130},()=>({x:Math.random()*S,y:Math.random()*S,s:Math.random()*1.0+0.2,a:Math.random()*0.28+0.08}));
 function torusPoint(theta,phi,rScale){const rr=r*rScale;const x=(R+rr*Math.cos(phi))*Math.cos(theta);const y=(R+rr*Math.cos(phi))*Math.sin(theta);const z=rr*Math.sin(phi);return{x,y,z};}
 function project(px,py,pz,rotX,rotY){const y2=py*Math.cos(rotX)-pz*Math.sin(rotX);const z2=py*Math.sin(rotX)+pz*Math.cos(rotX);const x3=px*Math.cos(rotY)+z2*Math.sin(rotY);const z3=-px*Math.sin(rotY)+z2*Math.cos(rotY);const fov=S*2.0;const d=fov/(fov+z3+S*0.5);return{px:cx+x3*d,py:cy+y2*d,z:z3,d};}
 function latLngToTorus(lat,lng){const theta=((lng+180)/360)*Math.PI*2;const phi=((lat+90)/180)*Math.PI*2;return{theta,phi};}
@@ -47,7 +47,9 @@ nodeSrc.forEach(({theta,phi,idx,rScale:nRScale})=>{const p=torusPoint(theta,phi,
 const vg=ctx.createRadialGradient(cx,cy,S*0.25,cx,cy,S*0.52);vg.addColorStop(0,"rgba(10,4,1,0)");vg.addColorStop(1,"rgba(10,4,1,0.52)");ctx.fillRect(0,0,S,S);ctx.fillStyle=vg;ctx.fillRect(0,0,S,S);
 }
 draw(0);return()=>cancelAnimationFrame(frameRef.current);},[]);
-const opacityRef=useRef(0.65);useEffect(()=>{const id=setInterval(()=>{const target=ceremonyRef&&ceremonyRef.current>0?Math.min(1,0.65+ceremonyRef.current*0.35):0.65;opacityRef.current+=(target-opacityRef.current)*0.08;if(canvasRef.current)canvasRef.current.style.opacity=String(opacityRef.current);},16);return()=>clearInterval(id);},[]);return(<canvas ref={canvasRef} style={{position:"fixed" as const,top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"105vw",height:"105vw",zIndex:1,pointerEvents:"none" as const,opacity:0.65}}/>);}
+const opacityRef=useRef(0.65);useEffect(()=>{scrollRef.current=scrollPct;},[scrollPct]);useEffect(()=>{const id=setInterval(()=>{const target=ceremonyRef&&ceremonyRef.current>0?Math.min(1,0.65+ceremonyRef.current*0.35):0.65;opacityRef.current+=(target-opacityRef.current)*0.08;if(canvasRef.current){canvasRef.current.style.opacity=String(opacityRef.current);const scale=1-scrollRef.current*0.15;canvasRef.current.style.width=scale*105+"vw";canvasRef.current.style.height=scale*105+"vw";}},16);return()=>clearInterval(id);},[]);return(<canvas ref={canvasRef} style={{position:"fixed" as const,top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"105vw",height:"105vw",zIndex:1,pointerEvents:"none" as const,opacity:0.65}}/>);}
+
+
 
 
 
@@ -110,7 +112,7 @@ function triggerCeremony(isContrib?:boolean){surge();ceremonyRef.current=1.8;set
 return(<div style={{backgroundColor:C.bg,minHeight:"100vh",width:"100%",position:"relative" as const,overflowX:"hidden" as const,cursor:"crosshair" as const}}>
 <div aria-hidden="true" style={{position:"fixed" as const,inset:0,pointerEvents:"none" as const,zIndex:0,background:"radial-gradient(ellipse 180% 180% at 50% 42%, #4A2208 0%, #2A1204 38%, #180802 62%, #0A0401 100%)"}}/>
 <BreathingRings coherence={coherence} hovered={hovered}/>
-<ToroidalField coherence={coherence} ceremonyRef={ceremonyRef} signalPoints={loaded?signalPoints:[]}/>
+<ToroidalField coherence={coherence} ceremonyRef={ceremonyRef} signalPoints={loaded?signalPoints:[]} scrollPct={scrollPct}/>
 <CursorWarmth heartPos={{x:typeof window!=="undefined"?window.innerWidth/2:760,y:typeof window!=="undefined"?window.innerHeight*0.44:380}}/>
 <SignalWhispers signals={feedSignals}/>
 <FieldDataPanel coherence={coherence} fieldCount={fieldCount} signals={allSignals}/>
@@ -152,6 +154,7 @@ return(<div style={{backgroundColor:C.bg,minHeight:"100vh",width:"100%",position
 <div style={{minHeight:"clamp(4.2rem,7vh,5.8rem)",maxWidth:"min(600px,90vw)",width:"100%",display:"flex",alignItems:"center",justifyContent:"center",textAlign:"center" as const,marginTop:"clamp(1.8rem,3.8vh,3rem)",opacity:loaded?1:0,transition:"opacity 2.5s ease 2.2s"}}>
 <p style={{fontFamily:"Georgia,serif",fontStyle:"italic" as const,fontSize:"clamp(0.95rem,1.8vw,1.1rem)",lineHeight:1.95,color:C.white,whiteSpace:"pre-line" as const,opacity:txVisible?0.92:0,transition:"opacity 1.4s ease",textShadow:"0 2px 22px rgba(10,4,1,0.88)"}}>
 {displayed}{txVisible&&<span style={{opacity:0.22,fontStyle:"normal" as const}}>|</span>}</p></div></div>
+
 
 
 
