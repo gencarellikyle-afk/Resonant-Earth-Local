@@ -5,6 +5,7 @@ export default function FractalHeart({coherence=0.4,className="",onHover=false}:
 const canvasRef=useRef<HTMLCanvasElement>(null);
 const cohRef=useRef(coherence);
 const hoverRef=useRef(onHover);
+const hoverEnergyRef=useRef(0);
 useEffect(()=>{cohRef.current=coherence;},[coherence]);
 useEffect(()=>{hoverRef.current=onHover;},[onHover]);
 useEffect(()=>{
@@ -19,10 +20,10 @@ const cx=S/2;const cy=S/2+20;
 let frameId:number;let t=0;
 function hx(u:number,s:number){return s*16*Math.pow(Math.sin(u),3);}
 function hy(u:number,s:number){return-s*(13*Math.cos(u)-5*Math.cos(2*u)-2*Math.cos(3*u)-Math.cos(4*u));}
-function drawHeart(scale:number,alpha:number,r:number,g:number,b:number,lw:number,pts:number=120){
+function drawHeart(scale:number,alpha:number,r:number,g:number,b:number,lw:number){
 ctx.beginPath();
-for(let i=0;i<=pts;i++){
-const u=(i/pts)*Math.PI*2;
+for(let i=0;i<=120;i++){
+const u=(i/120)*Math.PI*2;
 const x=cx+hx(u,scale);
 const y=cy+hy(u,scale);
 if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
@@ -34,73 +35,75 @@ function draw(){
 frameId=requestAnimationFrame(draw);t+=0.008;
 const coh=cohRef.current;
 const hovering=hoverRef.current;
-const hBoost=hovering?0.4:0;
-const totalEnergy=coh+hBoost;
+hoverEnergyRef.current+=(( hovering?1:0)-hoverEnergyRef.current)*0.045;
+const he=hoverEnergyRef.current;
+const totalEnergy=coh+he*0.45;
 ctx.clearRect(0,0,S,S);
-const bgR=hovering?140+coh*40:100+coh*30;
+const bgR=95+totalEnergy*55;
 const bg=ctx.createRadialGradient(cx,cy,0,cx,cy,bgR);
-bg.addColorStop(0,"rgba(255,200,60,"+(0.20+totalEnergy*0.18)+")");
-bg.addColorStop(0.3,"rgba(210,90,10,"+(0.10+totalEnergy*0.10)+")");
-bg.addColorStop(0.7,"rgba(120,35,4,"+(0.04+totalEnergy*0.05)+")");
+bg.addColorStop(0,"rgba(255,195,55,"+(0.18+totalEnergy*0.22)+")");
+bg.addColorStop(0.28,"rgba(210,88,10,"+(0.09+totalEnergy*0.12)+")");
+bg.addColorStop(0.65,"rgba(120,32,4,"+(0.04+totalEnergy*0.06)+")");
 bg.addColorStop(1,"rgba(10,4,1,0)");
 ctx.fillStyle=bg;ctx.beginPath();ctx.arc(cx,cy,bgR,0,Math.PI*2);ctx.fill();
-const EMANATIONS=6;
+const EMANATIONS=7;
 for(let e=0;e<EMANATIONS;e++){
-const phase=t*0.5+e*(Math.PI*2/EMANATIONS);
+const phase=t*(0.4+he*0.3)+e*(Math.PI*2/EMANATIONS);
 const prog=(Math.sin(phase)+1)/2;
-const emanScale=4+prog*(8+totalEnergy*6);
-const emanAlpha=(1-prog)*(0.18+totalEnergy*0.14);
-if(emanAlpha>0.005){drawHeart(emanScale,emanAlpha,255,210,100,0.8);}}
-const LAYERS=7;
-const maxScale=11+totalEnergy*3;
+const emanScale=3.5+prog*(7+totalEnergy*7);
+const emanAlpha=(1-prog)*(0.14+totalEnergy*0.16);
+if(emanAlpha>0.004)drawHeart(emanScale,emanAlpha,255,212,105,0.7);}
+const LAYERS=8;
+const maxScale=10+totalEnergy*4;
 for(let l=0;l<LAYERS;l++){
 const lf=l/(LAYERS-1);
-const scale=(3+l*(maxScale/LAYERS))*(1+Math.sin(t*0.6+l*0.3)*0.018);
-const breathPhase=Math.sin(t*0.7+l*0.25);
-const alpha=Math.min(1,0.10+lf*0.22+totalEnergy*0.16+breathPhase*0.06);
-const cr=Math.round(255-lf*12);
-const cg=Math.round(245-lf*80);
-const cb=Math.round(220-lf*160);
-drawHeart(scale,alpha,cr,cg,cb,l===LAYERS-1?1.6:0.8);
-if(l>2){
+const scale=(2.5+l*(maxScale/LAYERS))*(1+Math.sin(t*0.55+l*0.28)*0.016);
+const breathPhase=Math.sin(t*0.65+l*0.22);
+const alpha=Math.min(1,0.08+lf*0.20+totalEnergy*0.18+breathPhase*0.05);
+const cr=Math.round(254-lf*10);
+const cg=Math.round(244-lf*75);
+const cb=Math.round(218-lf*155);
+drawHeart(scale,alpha,cr,cg,cb,l===LAYERS-1?1.7:0.8);
+if(l>1){
 const step=l===LAYERS-1?2:4;
 for(let i=0;i<120;i+=step){
 const u=(i/120)*Math.PI*2;
 const x=cx+hx(u,scale);
 const y=cy+hy(u,scale);
-const pulse=Math.abs(Math.sin(t*1.2+i*0.14+l*0.5));
-const da=Math.min(1,(0.25+lf*0.25+totalEnergy*0.18)*pulse);
-const dr=l===LAYERS-1?2.2:1.4;
-const grd=ctx.createRadialGradient(x,y,0,x,y,dr*2.8);
+const pulse=Math.abs(Math.sin(t*1.3+i*0.13+l*0.5));
+const da=Math.min(1,(0.20+lf*0.28+totalEnergy*0.20)*pulse);
+const dr=l===LAYERS-1?2.4:1.5;
+const grd=ctx.createRadialGradient(x,y,0,x,y,dr*3);
 grd.addColorStop(0,"rgba("+cr+","+cg+","+cb+","+da+")");
+grd.addColorStop(0.5,"rgba("+cr+","+cg+","+cb+","+(da*0.3)+")");
 grd.addColorStop(1,"rgba("+cr+","+cg+","+cb+",0)");
 ctx.fillStyle=grd;
-ctx.beginPath();ctx.arc(x,y,dr*2.8,0,Math.PI*2);ctx.fill();}}}
-const midR=40+totalEnergy*28+(hovering?12:0);
+ctx.beginPath();ctx.arc(x,y,dr*3,0,Math.PI*2);ctx.fill();}}}
+const midR=38+totalEnergy*32;
 const mg=ctx.createRadialGradient(cx,cy,0,cx,cy,midR);
-mg.addColorStop(0,"rgba(255,235,120,"+(0.65+totalEnergy*0.25)+")");
-mg.addColorStop(0.2,"rgba(255,185,55,"+(0.38+totalEnergy*0.18)+")");
-mg.addColorStop(0.5,"rgba(220,95,18,"+(0.14+totalEnergy*0.10)+")");
+mg.addColorStop(0,"rgba(255,238,125,"+(0.68+totalEnergy*0.22)+")");
+mg.addColorStop(0.18,"rgba(255,188,58,"+(0.40+totalEnergy*0.18)+")");
+mg.addColorStop(0.48,"rgba(220,98,20,"+(0.15+totalEnergy*0.12)+")");
 mg.addColorStop(1,"rgba(10,4,1,0)");
 ctx.fillStyle=mg;ctx.beginPath();ctx.arc(cx,cy,midR,0,Math.PI*2);ctx.fill();
-const coreR=10+totalEnergy*10+Math.sin(t*1.4)*2.5;
+const coreR=11+totalEnergy*11+Math.sin(t*1.5)*2.2;
 const core=ctx.createRadialGradient(cx,cy,0,cx,cy,coreR);
-core.addColorStop(0,"rgba(255,255,250,1.0)");
-core.addColorStop(0.15,"rgba(255,250,210,0.95)");
-core.addColorStop(0.4,"rgba(255,210,75,0.68)");
-core.addColorStop(0.7,"rgba(238,130,28,0.28)");
+core.addColorStop(0,"rgba(255,255,248,1.0)");
+core.addColorStop(0.12,"rgba(255,252,215,0.96)");
+core.addColorStop(0.38,"rgba(255,212,78,0.70)");
+core.addColorStop(0.68,"rgba(238,132,30,0.28)");
 core.addColorStop(1,"rgba(10,4,1,0)");
 ctx.fillStyle=core;ctx.beginPath();ctx.arc(cx,cy,coreR,0,Math.PI*2);ctx.fill();
-const sparkCount=hovering?10:6;
+const sparkCount=Math.round(6+he*5);
 for(let i=0;i<sparkCount;i++){
-const angle=t*(hovering?1.2:0.7)+i*(Math.PI*2/sparkCount);
-const dist=16+Math.sin(t*1.8+i*1.1)*9+totalEnergy*14;
+const angle=t*(0.65+he*0.7)+i*(Math.PI*2/sparkCount);
+const dist=15+Math.sin(t*1.9+i*1.2)*9+totalEnergy*16;
 const sx=cx+Math.cos(angle)*dist;
 const sy=cy+Math.sin(angle)*dist*0.72;
-const sa=Math.max(0,(Math.abs(Math.sin(t*2.0+i*1.3))-0.1)*(0.65+totalEnergy*0.35));
+const sa=Math.max(0,(Math.abs(Math.sin(t*2.1+i*1.3))-0.08)*(0.68+totalEnergy*0.32));
 const sg=ctx.createRadialGradient(sx,sy,0,sx,sy,5.5);
-sg.addColorStop(0,"rgba(255,248,170,"+sa+")");
-sg.addColorStop(0.45,"rgba(255,180,45,"+(sa*0.55)+")");
+sg.addColorStop(0,"rgba(255,248,172,"+sa+")");
+sg.addColorStop(0.45,"rgba(255,182,48,"+(sa*0.52)+")");
 sg.addColorStop(1,"rgba(255,100,15,0)");
 ctx.fillStyle=sg;ctx.beginPath();ctx.arc(sx,sy,5.5,0,Math.PI*2);ctx.fill();}
 }
