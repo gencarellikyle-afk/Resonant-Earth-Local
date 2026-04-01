@@ -16,7 +16,8 @@ nodeSrc.forEach(({theta,phi,idx,rScale:nRScale})=>{const p=torusPoint(theta,phi,
 const vg=ctx.createRadialGradient(cx,cy,S*0.25,cx,cy,S*0.52);vg.addColorStop(0,"rgba(10,4,1,0)");vg.addColorStop(1,"rgba(10,4,1,0.52)");ctx.fillRect(0,0,S,S);ctx.fillStyle=vg;ctx.fillRect(0,0,S,S);
 }
 draw(0);return()=>cancelAnimationFrame(frameRef.current);},[]);
-const opacityRef=useRef(0.65);useEffect(()=>{scrollRef.current=scrollPct;},[scrollPct]);useEffect(()=>{const id=setInterval(()=>{const target=ceremonyRef&&ceremonyRef.current>0?Math.min(1,0.65+ceremonyRef.current*0.35):0.65;opacityRef.current+=(target-opacityRef.current)*0.08;if(canvasRef.current){canvasRef.current.style.opacity=String(opacityRef.current);const scale=1-scrollRef.current*0.15;canvasRef.current.style.width=scale*105+"vw";canvasRef.current.style.height=scale*105+"vw";}},16);return()=>clearInterval(id);},[]);return(<canvas ref={canvasRef} style={{position:"fixed" as const,top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"105vw",height:"105vw",zIndex:1,pointerEvents:"none" as const,opacity:0.65}}/>);}
+const opacityRef=useRef(0.65);useEffect(()=>{scrollRef.current=scrollPct;},[scrollPct]);useEffect(()=>{const id=setInterval(()=>{const target=ceremonyRef&&ceremonyRef.current>0?Math.min(1,0.65+ceremonyRef.current*0.35):0.65;opacityRef.current+=(target-opacityRef.current)*0.08;if(canvasRef.current){canvasRef.current.style.opacity=String(opacityRef.current);const scale=1-scrollRef.current*0.15;canvasRef.current.style.transform="translate(-50%,-50%) scale("+scale+")";}},16);return()=>clearInterval(id);},[]);return(<canvas ref={canvasRef} style={{position:"fixed" as const,top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"105vw",height:"105vw",zIndex:1,pointerEvents:"none" as const,opacity:0.65}}/>);}
+
 
 
 
