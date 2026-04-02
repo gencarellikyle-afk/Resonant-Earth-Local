@@ -65,7 +65,7 @@ const cg=Math.round(244-lf*75);
 const cb=Math.round(218-lf*155);
 drawHeart(scale,alpha,cr,cg,cb,l===LAYERS-1?1.7:0.8);
 if(l>1){
-const step=l===LAYERS-1?2:4;
+const step=l===LAYERS-1?1:3;
 for(let i=0;i<120;i+=step){
 const u=(i/120)*Math.PI*2;
 const x=cx+hx(u,scale);
@@ -111,6 +111,7 @@ draw();return()=>cancelAnimationFrame(frameId);
 },[]);
 return<canvas ref={canvasRef} className={className} style={{width:"100%",height:"100%",display:"block"}}/>;
 }
+
 
 
 
