@@ -4,3 +4,5 @@ html,body{margin:0;padding:0;width:100%;min-height:100vh;background-color:#110E0
 
 @keyframes heartPulse { 0%, 100% { box-shadow: 0 0 40px rgba(140,90,240,0.14), 0 0 80px rgba(80,40,180,0.08); } 50% { box-shadow: 0 0 80px rgba(180,130,255,0.32), 0 0 160px rgba(140,90,240,0.16); } }
 
+
+@keyframes heartRingExpand { 0% { transform: scale(1.0); opacity: 0.7; } 100% { transform: scale(2.2); opacity: 0; } }
