@@ -53,7 +53,7 @@ const prog=(Math.sin(phase)+1)/2;
 const emanScale=3.5+prog*(7+totalEnergy*7);
 const emanAlpha=(1-prog)*(0.14+totalEnergy*0.16);
 if(emanAlpha>0.004)drawHeart(emanScale,emanAlpha,255,212,105,0.7);}
-const LAYERS=8;
+const LAYERS=6;
 const maxScale=10+totalEnergy*4;
 for(let l=0;l<LAYERS;l++){
 const lf=l/(LAYERS-1);
@@ -111,5 +111,6 @@ draw();return()=>cancelAnimationFrame(frameId);
 },[]);
 return<canvas ref={canvasRef} className={className} style={{width:"100%",height:"100%",display:"block"}}/>;
 }
+
 
 
