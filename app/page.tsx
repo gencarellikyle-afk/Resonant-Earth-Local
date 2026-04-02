@@ -50,7 +50,8 @@ nodeSrc.forEach(({theta,phi,idx,rScale:nRScale})=>{const p=torusPoint(theta,phi,
 const vg=ctx.createRadialGradient(cx,cy,S*0.25,cx,cy,S*0.52);vg.addColorStop(0,"rgba(2,4,8,0)");vg.addColorStop(1,"rgba(2,4,8,0.34)");ctx.fillStyle=vg;ctx.fillRect(0,0,S,S);
 }
 draw(0);return()=>cancelAnimationFrame(frameRef.current);},[]);
-const opacityRef=useRef(0.65);useEffect(()=>{scrollRef.current=scrollPct;},[scrollPct]);useEffect(()=>{const id=setInterval(()=>{const target=ceremonyRef&&ceremonyRef.current>0?Math.min(1,0.65+ceremonyRef.current*0.35):0.65;opacityRef.current+=(target-opacityRef.current)*0.08;if(canvasRef.current){const scrollFade=1-scrollRef.current*0.28;canvasRef.current.style.opacity=String(Math.max(0.08,opacityRef.current*scrollFade));canvasRef.current.style.transform="translate(-50%,-50%)";}},16);return()=>clearInterval(id);},[]);return(<canvas ref={canvasRef} style={{position:"fixed" as const,top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"105vw",height:"105vw",zIndex:1,pointerEvents:"none" as const,opacity:0.65}}/>);}
+const opacityRef=useRef(0.80);useEffect(()=>{scrollRef.current=scrollPct;},[scrollPct]);useEffect(()=>{const id=setInterval(()=>{const target=ceremonyRef&&ceremonyRef.current>0?Math.min(1,0.80+ceremonyRef.current*0.20):0.80;opacityRef.current+=(target-opacityRef.current)*0.08;if(canvasRef.current){const scrollFade=1-scrollRef.current*0.28;canvasRef.current.style.opacity=String(Math.max(0.08,opacityRef.current*scrollFade));canvasRef.current.style.transform="translate(-50%,-50%)";}},16);return()=>clearInterval(id);},[]);return(<canvas ref={canvasRef} style={{position:"fixed" as const,top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"105vw",height:"105vw",zIndex:1,pointerEvents:"none" as const,opacity:0.80}}/>);}
+
 
 
 
@@ -143,43 +144,52 @@ return(<div style={{backgroundColor:C.bg,minHeight:"100vh",width:"100%",position
 <SignalWhispers signals={feedSignals}/>
 <FieldDataPanel coherence={coherence} fieldCount={fieldCount} signals={allSignals}/>
 <div aria-hidden="true" style={{position:"fixed" as const,top:0,left:0,right:0,height:"38vh",pointerEvents:"none" as const,zIndex:3,background:"radial-gradient(ellipse 100% 100% at 50% 0%, rgba(13,71,161,"+(0.11+coherence*0.07)+") 0%, rgba(8,40,100,"+(0.05+coherence*0.03)+") 50%, rgba(2,4,8,0) 100%)"}}/>
-<div aria-hidden="true" style={{position:"fixed" as const,bottom:0,left:0,right:0,height:"38vh",pointerEvents:"none" as const,zIndex:3,background:"linear-gradient(to top, rgba(2,4,8,"+(0.65+coherence*0.06)+") 0%, rgba(2,4,8,"+(0.55+coherence*0.06)+") 40%, rgba(2,4,8,0.12) 75%, rgba(2,4,8,0) 100%)"}}/>
-<div aria-hidden="true" style={{position:"fixed" as const,inset:0,pointerEvents:"none" as const,zIndex:2,background:"radial-gradient(ellipse 60% 68% at 50% 50%, rgba(10,4,1,0) 0%, rgba(10,4,1,0.02) 28%, rgba(10,4,1,0.32) 54%, rgba(10,4,1,0.62) 74%, rgba(10,4,1,0.78) 100%)"}}/>
+<div aria-hidden="true" style={{position:"fixed" as const,bottom:0,left:0,right:0,height:"38vh",pointerEvents:"none" as const,zIndex:3,background:"linear-gradient(to top, rgba(2,4,8,"+(0.42+coherence*0.06)+") 0%, rgba(2,4,8,"+(0.32+coherence*0.06)+") 40%, rgba(2,4,8,0.12) 75%, rgba(2,4,8,0) 100%)"}}/>
+<div aria-hidden="true" style={{position:"fixed" as const,inset:0,pointerEvents:"none" as const,zIndex:2,background:"radial-gradient(ellipse 60% 68% at 50% 50%, rgba(10,4,1,0) 0%, rgba(10,4,1,0.01) 28%, rgba(10,4,1,0.18) 54%, rgba(10,4,1,0.38) 74%, rgba(10,4,1,0.52) 100%)"}}/>
 <TransmissionRings pulseRingsRef={pulseRingsRef}/>
 <div style={{position:"fixed",right:0,top:0,width:"1px",height:scrollPct*100+"vh",background:"linear-gradient(to bottom, rgba(79,195,247,0.0), rgba(79,195,247,0.55))",zIndex:60,pointerEvents:"none",transition:"height 0.1s linear"}}/>
 <div style={{position:"relative" as const,zIndex:10,width:"100%",minHeight:"100vh",display:"flex",flexDirection:"column" as const,alignItems:"center",justifyContent:"center",padding:"clamp(4rem,8vh,6rem) 1.5rem clamp(3rem,5vh,4rem)"}}>
 <header style={{textAlign:"center" as const,marginBottom:"0.2rem",opacity:loaded?1:0,transition:"opacity 3s ease 0.5s"}}>
 <p style={{fontFamily:"monospace",fontSize:"clamp(0.78rem,1.3vw,0.95rem)",letterSpacing:"0.38em",textTransform:"uppercase" as const,color:C.gold,marginBottom:"clamp(1rem,2.2vh,1.6rem)",opacity:1,textShadow:"0 0 38px rgba(79,195,247,0.38), 0 0 75px rgba(79,195,247,0.14)"}}>A shared system where individual presence creates collective results &mdash; on your own path.</p>
 <div style={{position:"relative" as const,display:"inline-block"}}>
-<div aria-hidden="true" style={{position:"absolute" as const,inset:"-40px -85px",borderRadius:"9999px",background:"radial-gradient(ellipse 100% 100% at 50% 50%, rgba(200,98,26,"+(0.12+coherence*0.14)+") 0%, transparent 60%)",filter:"blur(30px)",pointerEvents:"none" as const}}/>
+<div aria-hidden="true" style={{position:"absolute" as const,inset:"-40px -85px",borderRadius:"9999px",background:"radial-gradient(ellipse 100% 100% at 50% 50%, rgba(13,71,161,"+(0.18+coherence*0.18)+") 0%, transparent 60%)",filter:"blur(30px)",pointerEvents:"none" as const}}/>
 <h1 style={{fontFamily:"Georgia,serif",fontWeight:300,lineHeight:0.9,position:"relative" as const,margin:0}}>
 <span style={{display:"block",fontSize:"clamp(5rem,13vw,12rem)",color:"rgba(245,240,232,"+(0.97+coherence*0.03)+")",letterSpacing:"-0.01em",transition:"color 2.5s ease",textShadow:"0 0 80px rgba(245,240,232,0.45), 0 0 160px rgba(200,220,255,0.18)"}}>Resonant</span>
 <span style={{display:"block",fontSize:"clamp(5rem,13vw,12rem)",fontStyle:"italic" as const,color:"rgba(79,195,247,"+(0.92+coherence*0.08)+")",marginTop:"-0.08em",letterSpacing:"-0.01em",transition:"color 2.5s ease",textShadow:"0 0 80px rgba(79,195,247,0.42), 0 0 160px rgba(13,71,161,0.22)"}}>Earth</span>
 </h1></div></header>
 <div style={{position:"relative" as const,width:"min(400px,72vw)",height:"min(400px,72vw)",flexShrink:0,marginTop:"clamp(-10rem,-14vw,-6rem)",opacity:loaded?1:0,transition:"opacity 3.5s ease 0.9s"}} onMouseEnter={()=>setHovered(true)} onMouseLeave={()=>setHovered(false)} onTouchStart={()=>setHovered(true)} onTouchEnd={()=>setHovered(false)}>
-<div aria-hidden="true" style={{position:"absolute" as const,inset:"-35%",borderRadius:"9999px",background:"radial-gradient(ellipse 55% 55% at 50% 50%, rgba(200,90,20,"+(0.28+coherence*0.12)+") 0%, rgba(160,60,12,"+(0.12+coherence*0.08)+") 35%, rgba(10,4,1,0) 70%)",pointerEvents:"none" as const,zIndex:0,filter:"blur(8px)"}}/>
+<div aria-hidden="true" style={{position:"absolute" as const,inset:"-35%",borderRadius:"9999px",background:"radial-gradient(ellipse 55% 55% at 50% 50%, rgba(13,71,161,"+(0.32+coherence*0.14)+") 0%, rgba(8,32,80,"+(0.14+coherence*0.08)+") 35%, rgba(2,4,8,0) 70%)",pointerEvents:"none" as const,zIndex:0,filter:"blur(8px)"}}/>
 <Ripples triggered={hovered}/>
 <Particles coherence={coherence}/>
-{[1.85,1.50,1.20].map((s,i)=>(<div key={i} aria-hidden="true" style={{position:"absolute" as const,inset:0,borderRadius:"9999px",background:"radial-gradient(ellipse 62% 62% at 50% 50%, rgba(255,"+(98+i*20)+",32,"+(0.09+coherence*0.13)/(i+1)+") 0%, transparent 68%)",transform:"scale("+(s+coherence*0.19+(hovered?0.13:0))+")",transition:"transform 2.8s ease",pointerEvents:"none" as const,zIndex:1}}/>))}
+{[1.85,1.50,1.20].map((s,i)=>(<div key={i} aria-hidden="true" style={{position:"absolute" as const,inset:0,borderRadius:"9999px",background:"radial-gradient(ellipse 62% 62% at 50% 50%, rgba(79,195,247,"+(0.07+coherence*0.10)/(i+1)+") 0%, transparent 68%)",transform:"scale("+(s+coherence*0.19+(hovered?0.13:0))+")",transition:"transform 2.8s ease",pointerEvents:"none" as const,zIndex:1}}/>))}
 <div style={{position:"absolute" as const,inset:0,zIndex:3,transform:"translate("+heartOffset.x+"px,"+heartOffset.y+"px)",transition:"transform 0.07s linear"}}>
 <FractalHeart coherence={coherence} className="w-full h-full"/></div></div>
 <div style={{display:"flex",flexDirection:"column" as const,alignItems:"center",gap:"0.88rem",marginTop:"0.55rem",opacity:loaded?1:0,transition:"opacity 2.5s ease 1.4s"}}>
 <div style={{display:"flex",alignItems:"center",gap:"0.62rem"}}>
 <FieldDot/><span style={{color:C.white,fontFamily:"monospace",fontSize:"clamp(0.74rem,1.2vw,0.87rem)",letterSpacing:"0.32em",textTransform:"uppercase" as const,opacity:0.92}}>FIELD COHERENCE: LIVE</span><FieldDot delay="0.9s"/>
 </div>
-<div style={{display:"flex",flexDirection:"column" as const,alignItems:"center",gap:"0.52rem",padding:"0.65rem 1.9rem 0.95rem",backgroundColor:"rgba(10,4,1,0.52)",backdropFilter:"blur(10px)",border:"1px solid rgba(200,98,26,0.20)"}}>
+<div style={{display:"flex",flexDirection:"column" as const,alignItems:"center",gap:"0.52rem",padding:"0.65rem 1.9rem 0.95rem",backgroundColor:"rgba(10,4,1,0.52)",backdropFilter:"blur(10px)",border:"1px solid rgba(79,195,247,0.20)"}}>
 <div style={{display:"flex",alignItems:"center",gap:"1.15rem"}}>
 <div style={{width:"clamp(13rem,26vw,22rem)",height:"6px",backgroundColor:"rgba(253,246,236,0.08)",borderRadius:"9999px",position:"relative" as const,overflow:"hidden" as const}}>
-<div style={{position:"absolute" as const,left:0,top:0,height:"100%",width:pct+"%",background:"linear-gradient(to right, rgba(95,28,5,1), "+C.copper+", "+C.ember+", "+C.gold+")",transition:"width 1.4s ease",boxShadow:"0 0 32px rgba(240,192,64,"+(coherence*1.25)+"), 0 0 14px rgba(255,87,34,"+(coherence*0.95)+")"}}/></div>
+<div style={{position:"absolute" as const,left:0,top:0,height:"100%",width:pct+"%",background:"linear-gradient(to right, rgba(13,71,161,1), rgba(25,118,210,1), rgba(79,195,247,1), rgba(179,229,252,1))",transition:"width 1.4s ease",boxShadow:"0 0 32px rgba(79,195,247,"+(coherence*1.25)+"), 0 0 14px rgba(13,71,161,"+(coherence*0.95)+")"}}/></div>
 <span style={{color:C.gold,fontFamily:"monospace",fontSize:"clamp(1.3rem,2.6vw,1.7rem)",width:"4.2rem",fontWeight:300,opacity:1,letterSpacing:"0.02em",textShadow:"0 0 26px rgba(240,192,64,0.72)"}}>{pct}%</span></div>
 <p style={{fontFamily:"monospace",fontSize:"clamp(0.72rem,1.1vw,0.84rem)",color:C.copper,letterSpacing:"0.20em",textTransform:"uppercase" as const,opacity:0.94,margin:0}}>{label}</p></div>
 <p style={{color:C.white,fontFamily:"monospace",fontSize:"clamp(0.74rem,1.2vw,0.84rem)",textAlign:"center" as const,padding:"0 1rem",opacity:0.60,marginTop:"0.22rem"}}>touch the heart &mdash; the field responds when presence is given</p></div>
 <div style={{display:"flex",gap:"clamp(0.72rem,2vw,1.3rem)",flexWrap:"wrap" as const,justifyContent:"center",marginTop:"clamp(2.2rem,4vh,3.2rem)",opacity:loaded?1:0,transition:"opacity 2.5s ease 1.8s"}}>
-<a href="/step-into-the-system" style={{padding:"clamp(0.96rem,1.7vh,1.16rem) clamp(2rem,3.8vw,3rem)",border:"1px solid rgba(200,98,26,"+(0.58+coherence*0.32)+")",backgroundColor:"rgba(10,4,1,0.65)",color:C.white,fontFamily:"monospace",fontSize:"clamp(0.75rem,1.2vw,0.85rem)",letterSpacing:"0.24em",textTransform:"uppercase" as const,cursor:"crosshair" as const,transition:"all 0.4s ease",textDecoration:"none",display:"inline-block",backdropFilter:"blur(8px)",opacity:0.97}} onMouseEnter={(e)=>{const el=e.currentTarget;el.style.backgroundColor="rgba(200,98,26,0.28)";el.style.borderColor=C.copper;el.style.opacity="1";}} onMouseLeave={(e)=>{const el=e.currentTarget;el.style.backgroundColor="rgba(10,4,1,0.65)";el.style.borderColor="rgba(200,98,26,"+(0.58+coherence*0.32)+")";el.style.opacity="0.97";}}>Step Into the System</a>
+<a href="/step-into-the-system" style={{padding:"clamp(0.96rem,1.7vh,1.16rem) clamp(2rem,3.8vw,3rem)",border:"1px solid rgba(79,195,247,"+(0.58+coherence*0.32)+")",backgroundColor:"rgba(10,4,1,0.65)",color:C.white,fontFamily:"monospace",fontSize:"clamp(0.75rem,1.2vw,0.85rem)",letterSpacing:"0.24em",textTransform:"uppercase" as const,cursor:"crosshair" as const,transition:"all 0.4s ease",textDecoration:"none",display:"inline-block",backdropFilter:"blur(8px)",opacity:0.97}} onMouseEnter={(e)=>{const el=e.currentTarget;el.style.backgroundColor="rgba(79,195,247,0.12)";el.style.borderColor=C.copper;el.style.opacity="1";}} onMouseLeave={(e)=>{const el=e.currentTarget;el.style.backgroundColor="rgba(10,4,1,0.65)";el.style.borderColor="rgba(79,195,247,"+(0.58+coherence*0.32)+")";el.style.opacity="0.97";}}>Step Into the System</a>
 <Link href="/what-is-this" style={{padding:"clamp(0.96rem,1.7vh,1.16rem) clamp(2rem,3.8vw,3rem)",backgroundColor:"rgba(10,4,1,0.65)",border:"1px solid rgba(253,246,236,0.24)",color:C.white,fontFamily:"monospace",fontSize:"clamp(0.75rem,1.2vw,0.85rem)",letterSpacing:"0.24em",textTransform:"uppercase" as const,cursor:"crosshair" as const,transition:"all 0.4s ease",textDecoration:"none",display:"inline-block",backdropFilter:"blur(8px)",opacity:0.82}} onMouseEnter={(e)=>{const el=e.currentTarget;el.style.borderColor="rgba(253,246,236,0.58)";el.style.opacity="1";}} onMouseLeave={(e)=>{const el=e.currentTarget;el.style.borderColor="rgba(253,246,236,0.24)";el.style.opacity="0.82";}}>What Is This?</Link></div>
 <div style={{minHeight:"clamp(4.2rem,7vh,5.8rem)",maxWidth:"min(600px,90vw)",width:"100%",display:"flex",alignItems:"center",justifyContent:"center",textAlign:"center" as const,marginTop:"clamp(1.8rem,3.8vh,3rem)",opacity:loaded?1:0,transition:"opacity 2.5s ease 2.2s"}}>
 <p style={{fontFamily:"Georgia,serif",fontStyle:"italic" as const,fontSize:"clamp(0.95rem,1.8vw,1.1rem)",lineHeight:1.95,color:C.white,whiteSpace:"pre-line" as const,opacity:txVisible?0.92:0,transition:"opacity 1.4s ease",textShadow:"0 2px 22px rgba(10,4,1,0.88)"}}>
 {displayed}{txVisible&&<span style={{opacity:0.22,fontStyle:"normal" as const}}>|</span>}</p></div></div>
+
+
+
+
+
+
+
+
+
 
 
 
