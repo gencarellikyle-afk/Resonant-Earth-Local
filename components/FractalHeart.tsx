@@ -72,7 +72,7 @@ const x=cx+hx(u,scale);
 const y=cy+hy(u,scale);
 const pulse=Math.abs(Math.sin(t*1.3+i*0.13+l*0.5));
 const da=Math.min(1,(0.20+lf*0.28+totalEnergy*0.20)*pulse);
-const dr=l===LAYERS-1?4.0:1.5;
+const dr=l===LAYERS-1?5.5:1.5;
 const grd=ctx.createRadialGradient(x,y,0,x,y,dr*3);
 grd.addColorStop(0,"rgba("+cr+","+cg+","+cb+","+da+")");
 grd.addColorStop(0.5,"rgba("+cr+","+cg+","+cb+","+(da*0.3)+")");
@@ -111,6 +111,7 @@ draw();return()=>cancelAnimationFrame(frameId);
 },[]);
 return<canvas ref={canvasRef} className={className} style={{width:"100%",height:"100%",display:"block"}}/>;
 }
+
 
 
 
