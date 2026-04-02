@@ -37,7 +37,7 @@ const coh=cohRef.current;
 const hovering=hoverRef.current;
 hoverEnergyRef.current+=(( hovering?1:0)-hoverEnergyRef.current)*0.045;
 const he=hoverEnergyRef.current;
-const totalEnergy=coh+he*0.45;
+const totalEnergy=coh+he*1.2;
 ctx.clearRect(0,0,S,S);
 const bgR=95+totalEnergy*55;
 const bg=ctx.createRadialGradient(cx,cy,0,cx,cy,bgR);
@@ -64,7 +64,7 @@ const cr=Math.round(254-lf*10);
 const cg=Math.round(244-lf*75);
 const cb=Math.round(218-lf*155);
 drawHeart(scale,alpha,cr,cg,cb,l===LAYERS-1?1.7:0.8);
-if(l>1){
+if(l>1&&l<LAYERS-1){
 const step=l===LAYERS-1?1:3;
 for(let i=0;i<120;i+=step){
 const u=(i/120)*Math.PI*2;
@@ -111,6 +111,7 @@ draw();return()=>cancelAnimationFrame(frameId);
 },[]);
 return<canvas ref={canvasRef} className={className} style={{width:"100%",height:"100%",display:"block"}}/>;
 }
+
 
 
 
