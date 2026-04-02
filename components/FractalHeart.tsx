@@ -37,7 +37,7 @@ const coh=cohRef.current;
 const hovering=hoverRef.current;
 hoverEnergyRef.current+=(( hovering?1:0)-hoverEnergyRef.current)*0.045;
 const he=hoverEnergyRef.current;
-const totalEnergy=coh+he*1.2;
+const totalEnergy=coh+he*0.45;
 ctx.clearRect(0,0,S,S);
 const bgR=95+totalEnergy*55;
 const bg=ctx.createRadialGradient(cx,cy,0,cx,cy,bgR);
@@ -53,7 +53,7 @@ const prog=(Math.sin(phase)+1)/2;
 const emanScale=3.5+prog*(7+totalEnergy*7);
 const emanAlpha=(1-prog)*(0.14+totalEnergy*0.16);
 if(emanAlpha>0.004)drawHeart(emanScale,emanAlpha,255,212,105,0.7);}
-const LAYERS=6;
+const LAYERS=8;
 const maxScale=10+totalEnergy*4;
 for(let l=0;l<LAYERS;l++){
 const lf=l/(LAYERS-1);
@@ -64,22 +64,22 @@ const cr=Math.round(254-lf*10);
 const cg=Math.round(244-lf*75);
 const cb=Math.round(218-lf*155);
 drawHeart(scale,alpha,cr,cg,cb,l===LAYERS-1?1.7:0.8);
-if(l>1&&l<LAYERS-1){
-const step=l===LAYERS-1?1:3;
+if(l>1){
+const step=l===LAYERS-1?2:4;
 for(let i=0;i<120;i+=step){
 const u=(i/120)*Math.PI*2;
 const x=cx+hx(u,scale);
 const y=cy+hy(u,scale);
 const pulse=Math.abs(Math.sin(t*1.3+i*0.13+l*0.5));
 const da=Math.min(1,(0.20+lf*0.28+totalEnergy*0.20)*pulse);
-const dr=l===LAYERS-1?5.5:1.5;
+const dr=l===LAYERS-1?2.4:1.5;
 const grd=ctx.createRadialGradient(x,y,0,x,y,dr*3);
 grd.addColorStop(0,"rgba("+cr+","+cg+","+cb+","+da+")");
 grd.addColorStop(0.5,"rgba("+cr+","+cg+","+cb+","+(da*0.3)+")");
 grd.addColorStop(1,"rgba("+cr+","+cg+","+cb+",0)");
 ctx.fillStyle=grd;
 ctx.beginPath();ctx.arc(x,y,dr*3,0,Math.PI*2);ctx.fill();}}}
-const ghostOff={x:5,y:-4};const ghostLayers=[3,4,5];for(const gl of ghostLayers){const lf=gl/(LAYERS-1);const scale=(2.5+gl*(maxScale/LAYERS))*(1+Math.sin(t*0.55+gl*0.28)*0.016);const galpha=Math.min(0.13,0.06+lf*0.07);drawHeart(scale,galpha,254,244,218,0.6);ctx.save();ctx.translate(ghostOff.x,ghostOff.y);drawHeart(scale,galpha*0.85,254,230,180,0.5);ctx.restore();}const midR=38+totalEnergy*32;
+const ghostOff={x:5,y:-4};const ghostLayers=[5,6,7];for(const gl of ghostLayers){const lf=gl/(LAYERS-1);const scale=(2.5+gl*(maxScale/LAYERS))*(1+Math.sin(t*0.55+gl*0.28)*0.016);const galpha=Math.min(0.13,0.06+lf*0.07);drawHeart(scale,galpha,254,244,218,0.6);ctx.save();ctx.translate(ghostOff.x,ghostOff.y);drawHeart(scale,galpha*0.85,254,230,180,0.5);ctx.restore();}const midR=38+totalEnergy*32;
 const mg=ctx.createRadialGradient(cx,cy,0,cx,cy,midR);
 mg.addColorStop(0,"rgba(255,238,125,"+(0.68+totalEnergy*0.22)+")");
 mg.addColorStop(0.18,"rgba(255,188,58,"+(0.40+totalEnergy*0.18)+")");
@@ -111,11 +111,5 @@ draw();return()=>cancelAnimationFrame(frameId);
 },[]);
 return<canvas ref={canvasRef} className={className} style={{width:"100%",height:"100%",display:"block"}}/>;
 }
-
-
-
-
-
-
 
 
